@@ -131,13 +131,23 @@ def tapQuery_Het(source):
     source_left = f'G{long-1}'
     source_right = f'G{long+1}'
 
+    long = int(source.split('G')[1])  # Convert to an integer
+    source_left = f'G{long-1:03d}'    # Format as 3-digit number with leading zeros
+    source_right = f'G{long+1:03d}'   # Format as 3-digit number with leading zeros
+    source_ = f'G{long:03d}'          # Format as 3-digit number with leading zeros
+
+
+    print('+------------------------------------------------------------+')
+    print(source, source_left, source_right)
+    print('+------------------------------------------------------------+')
+
     print("\nQuerying the ESO TAP service at %s" % ESO_TAP_OBS)
     query = (
         "SELECT dp_id, exposure, prog_id, object, dp_tech, instrument, ra, dec \n"
         "FROM dbo.raw \n"
         "WHERE dp_id LIKE 'APEXHET.%' \n"
         "AND (prog_id LIKE '092.F-9315%' OR prog_id LIKE '193.C-0584%') \n"
-        f"AND (object LIKE '{source}%' OR object LIKE '{source_left}%' OR object LIKE '{source_right}%') \n"
+        f"AND (object LIKE '{source_}%' OR object LIKE '{source_left}%' OR object LIKE '{source_right}%') \n"
         "AND dp_cat = 'SCIENCE'"
     )
     print("\nQuery:\n" + query)
@@ -179,51 +189,6 @@ def freqArray(prihdr, specNr):
         freqs.append(f1)
     return freqs, refreq, cdelf
 
-def check_if_fk5(hdu):
-    """ Check if the WCS is in FK5 """
-    if ('RA' in hdu.header['CTYPE1']) & ('DEC' in hdu.header['CTYPE2']):
-        return True
-    else:
-        return False
-
-def convert_fk5(hdu):
-    """ Convert the WCS to FK5 """
-
-    print('Converting to FK5...')
-
-    hdr = hdu.header
-    hdu_2d = hdu.copy()
-    hdu_2d.data = hdu_2d.data[0, :, :]
-    hdu_2d.header['NAXIS'] = 2
-    hdu_2d.header['WCSAXES'] = 2
-    del hdu_2d.header['*3*']
-
-    wcs_out, shape_out = find_optimal_celestial_wcs(hdu_2d, frame='fk5', auto_rotate=True, projection='GLS')
-    # wcs_out, shape_out = find_optimal_celestial_wcs(hdu_2d, frame='fk5')
-
-    hdr_out_ = wcs_out.to_header()
-
-    hdr_out = hdr.copy()
-    for key in ['CRPIX1', 'CRPIX2', 'PC1_1', 'PC1_2', 'PC2_1', 'PC2_2', 'CDELT1', 'CDELT2', 
-                'CUNIT1', 'CUNIT2', 'CTYPE1', 'CTYPE2', 'CRVAL1', 'CRVAL2', 'LONPOLE', 'LATPOLE', 
-                'RADESYS', 'EQUINOX']:
-        try: 
-            hdr_out[key] = hdr_out_[key]
-        except: 
-            print('Key not found:', key)
-            continue
-    del hdr_out['*PV*']
-
-    array_out = reproject_interp(hdu, hdr_out, return_footprint=False)
-
-    hdu_out = fits.PrimaryHDU(array_out, header=hdr_out)
-
-    cube = SpectralCube.read(hdu_out)
-    cube.write('tmp.fits', overwrite=True)
-    hdu = fits.open('tmp.fits')
-    os.system('rm tmp.fits')
-
-    return hdu
 
 ##########################################
 # Main script execution
@@ -258,11 +223,6 @@ def main():
     print("Using science FITS file: " + specIn)
     fits.info(specIn)
     specfile = fits.open(specIn)
-
-    # The following block is commented out because the GAL conversion is accepted in the archive... 
-    # # --- Check if the WCS is in FK5 ---
-    # if ~check_if_fk5(specfile[0]):
-    #     specfile = convert_fk5(specfile[0])
 
     # --- Open FLUX FITS file and extract key header/data info ---
     try:
@@ -305,10 +265,6 @@ def main():
 
     fits.info(rmsIn)
     rmsfile = fits.open(rmsIn)
-
-    # # --- Check if the WCS is in FK5 ---
-    # if ~check_if_fk5(rmsfile[0]):
-    #     rmsfile = convert_fk5(rmsfile[0])
 
     # --- Open RMS FITS file and extract key header/data info ---
     print(CYAN + "... checking rms cube ..." + ENDCOLOR)
@@ -717,34 +673,6 @@ def main():
                 print(RED + "No transformation matrix available." + ENDCOLOR)
                 sys.exit()
 
-    # # --- Compute the spatial transformation matrix ---
-    # if all(k in prihdr for k in ("PC1_1", "PC1_2", "PC2_1", "PC2_2")):
-    #     # Convert from PC to CD using the CDELT values
-    #     exthdr.set("CD1_1", prihdr["CDELT1"] * prihdr["PC1_1"], "Computed from PC matrix")
-    #     exthdr.set("CD1_2", prihdr["CDELT1"] * prihdr["PC1_2"], "Computed from PC matrix")
-    #     exthdr.set("CD2_1", prihdr["CDELT2"] * prihdr["PC2_1"], "Computed from PC matrix")
-    #     exthdr.set("CD2_2", prihdr["CDELT2"] * prihdr["PC2_2"], "Computed from PC matrix")
-    #     print("PC matrix converted to CD matrix")
-    # elif (("CD1_1" in prihdr) and ("CD1_2" in prihdr) and ("CD2_1" in prihdr) and ("CD2_2" in prihdr)):
-    #     print("CDi_j transformation matrix is present")
-    # elif "CROTA2" in prihdr and ("CDELT1" in prihdr) and ("CDELT2" in prihdr):
-    #     print("Computing transformation matrix elements from CDELT and CROTA2")
-    #     cd12 = abs(-1.0 * prihdr["CDELT2"] * math.sin(prihdr["CROTA2"]))
-    #     cd21 = abs(prihdr["CDELT1"] * math.sin(prihdr["CROTA2"]))
-    #     exthdr.set("CD1_1", prihdr["CDELT1"] * math.cos(prihdr["CROTA2"]), "Transformation matrix element")
-    #     exthdr.set("CD1_2", cd12, "Transformation matrix element")
-    #     exthdr.set("CD2_1", cd21, "Transformation matrix element")
-    #     exthdr.set("CD2_2", prihdr["CDELT2"] * math.cos(prihdr["CROTA2"]), "Transformation matrix element")
-    # elif ("CDELT1" in prihdr) and ("CDELT2" in prihdr):
-    #     print("No rotation found: creating simple transformation matrix")
-    #     exthdr.set("CD1_1", prihdr["CDELT1"], "Transformation matrix element")
-    #     exthdr.set("CD1_2", 0.0, "Transformation matrix element")
-    #     exthdr.set("CD2_1", 0.0, "Transformation matrix element")
-    #     exthdr.set("CD2_2", prihdr["CDELT2"], "Transformation matrix element")
-    # else:
-    #     print(RED + "No transformation matrix available." + ENDCOLOR)
-    #     sys.exit()
-
     exthdr["SPECSYS"] = prihdr["SPECSYS"]
     exthdr["RESTFREQ"] = prihdr["RESTFREQ"]
     exthdr["VELO-LSR"] = prihdr["VELO-LSR"]
@@ -823,9 +751,8 @@ def main():
     orighdr.set("PRODCATG", "ANCILLARY.CUBE")
 
     # --- Delete some primary header keywords no longer needed ---
-    for pattern in ["CTYPE*...", "CRPIX*...", "CRVAL*...", "CDELT*...", "CROTA*...", "CUNIT1*...", "NAXIS", "NAXIS1", "NAXIS2", "NAXIS3", "RESTFREQ", "VELO-LSR", "IMAGFREQ"]:
-        if pattern in prihdr:
-            del prihdr[pattern]
+    for pattern in ["CTYPE*", "CRPIX*", "CRVAL*", "CDELT*", "CROTA*", "CUNIT1*", "NAXIS", "NAXIS1", "NAXIS2", "NAXIS3", "RESTFREQ", "VELO-LSR", "IMAGFREQ"]:
+        del prihdr[pattern]
 
     print(prihdr)
     print("")
