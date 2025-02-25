@@ -19,6 +19,7 @@ from astropy.io import fits
 from astropy.time import Time
 from astropy import units as u
 from astropy.wcs import WCS
+from astropy.coordinates import SkyCoord
 
 from spectral_cube import SpectralCube
 from reproject import reproject_interp
@@ -36,8 +37,10 @@ ENDCOLOR = "\033[0m"
 # CONFIGURATION: Set input parameters here.
 ##########################################
 # Set the names of the input FITS files (must be present in the current directory)
-SPEC_IN = "test.fits"         # Science cube file
-RMS_IN = "test.fits"            # Error (rms) cube file
+SPEC_IN = "G030_13CO21_Tmb_DR1.fits"           # Science cube file
+RMS_IN = "G030_13CO21_Tmb_DR1.fits"            # Error (rms) cube file
+FILENAME_OUT = SPEC_IN.split('_Tmb_DR1.fits')[0]+'_13CO21_P3.fits'
+FILENAME_WHITE_OUT = SPEC_IN.split('_Tmb_DR1.fits')[0]+'_13CO21_P3_whitelight.fits'
 
 # LMV file association (if applicable)
 ASSOCIATE_LMV = False                       # Set True if you want to associate a .lmv file
@@ -256,9 +259,10 @@ def main():
     fits.info(specIn)
     specfile = fits.open(specIn)
 
-    # --- Check if the WCS is in FK5 ---
-    if ~check_if_fk5(specfile[0]):
-        specfile = convert_fk5(specfile[0])
+    # The following block is commented out because the GAL conversion is accepted in the archive... 
+    # # --- Check if the WCS is in FK5 ---
+    # if ~check_if_fk5(specfile[0]):
+    #     specfile = convert_fk5(specfile[0])
 
     # --- Open FLUX FITS file and extract key header/data info ---
     try:
@@ -275,6 +279,13 @@ def main():
             prihdr["RA"] = prihdr["CRVAL1"]
         if ("DEC" not in prihdr) and ("DEC" in prihdr["CTYPE2"]):
             prihdr["DEC"] = prihdr["CRVAL2"]
+        else: 
+            # Convert Galactic CRVAL1 and CRVAL2 to RA/DEC 
+            print('Converting Galactic to RA/DEC')
+            c = SkyCoord(l=orighdr['CRVAL1'], b=orighdr['CRVAL2'], frame='galactic', unit=(u.deg, u.deg))
+            prihdr["RA"] = c.icrs.ra.deg
+            prihdr["DEC"] = c.icrs.dec.deg
+
         ra = prihdr["RA"]
         dec = prihdr["DEC"]
 
@@ -283,7 +294,6 @@ def main():
         print(RED + "Wrong FLUX FITS file, try it once again." + ENDCOLOR)
         sys.exit()
 
-    sci_wcs = WCS(specIn)
     specfile.close()
 
     # --- Open error (rms) cube ---
@@ -296,16 +306,15 @@ def main():
     fits.info(rmsIn)
     rmsfile = fits.open(rmsIn)
 
-    # --- Check if the WCS is in FK5 ---
-    if ~check_if_fk5(rmsfile[0]):
-        rmsfile = convert_fk5(rmsfile[0])
+    # # --- Check if the WCS is in FK5 ---
+    # if ~check_if_fk5(rmsfile[0]):
+    #     rmsfile = convert_fk5(rmsfile[0])
 
     # --- Open RMS FITS file and extract key header/data info ---
     print(CYAN + "... checking rms cube ..." + ENDCOLOR)
     try:
         rmsdat = rmsfile[0].data
         rmshdr = rmsfile[0].header
-        rmsNr = rmsdat.shape[0]
         b_unit_rms = str(rmshdr["BUNIT"])
         source_rms = rmshdr["OBJECT"]
 
@@ -313,6 +322,13 @@ def main():
             prihdr["RA"] = prihdr["CRVAL1"]
         if ("DEC" not in prihdr) and ("DEC" in prihdr["CTYPE2"]):
             prihdr["DEC"] = prihdr["CRVAL2"]
+        else: 
+            # Convert Galactic CRVAL1 and CRVAL2 to RA/DEC 
+            print('Converting Galactic to RA/DEC')
+            c = SkyCoord(l=orighdr['CRVAL1'], b=orighdr['CRVAL2'], frame='galactic', unit=(u.deg, u.deg))
+            prihdr["RA"] = c.icrs.ra.deg
+            prihdr["DEC"] = c.icrs.dec.deg
+
         ra = prihdr["RA"]
         dec = prihdr["DEC"]
 
@@ -398,12 +414,9 @@ def main():
         posra.append(row[6])
         posdec.append(row[7])
     fileList.sort()
-    sourceList = list(set(sourceList_tmp))
     dprtech = list(set(dprtech_tmp))
     obs_tech = dprtech[0]
     instrument = instrum[0]
-    posraval = float(posra[0])
-    posdecval = float(posdec[0])
     print(CYAN + "These files will be associated with the cube:\n " + "\n".join(fileList) + ENDCOLOR)
     NrFilesBol = len(fileList)
     if NrFilesBol >= 1:
@@ -505,7 +518,6 @@ def main():
         print(RED + "Error in flux conversion. Please check intensity units." + ENDCOLOR)
         sys.exit()
 
-    def_val = "%0.2f" % np.nanmax(flux)
     rms_med = np.nanmedian(flux_rms)
     rms_med_Jy = rms_med * factor if b_unit_rms[0] == "K" else rms_med
     flux_white = np.nanmean(flux, axis=0)
@@ -555,7 +567,6 @@ def main():
         print(GREEN + "Bibcode entry left blank" + ENDCOLOR)
 
     # --- Compute additional header keywords ---
-    crtDate = prihdr["DATE"]
     crtoSofw = prihdr["ORIGIN"]
     refrq4ap = refreq / 1.0e9  # GHz
     WAVELMAX = float("%0.6f" % ((min(freqs) * u.GHz).to(u.nm, equivalencies=u.spectral()).value))
@@ -576,7 +587,7 @@ def main():
     print(prihdr)
 
     # --- Delete unused keywords ---
-    for key in ["BUNIT", "DATAMIN", "DATAMAX", "LINE"]:
+    for key in ["BUNIT", "DATAMIN", "DATAMAX"]: #, "LINE"
         if key in prihdr:
             del prihdr[key]
 
@@ -684,60 +695,66 @@ def main():
     else:
         exthdr["CUNIT3"] = "m/s"
 
-    # if (("CD1_1" in prihdr) and ("CD1_2" in prihdr) and ("CD2_1" in prihdr) and ("CD2_2" in prihdr)):
-    #     print("CDi_j transformation matrix is present")
-    # else:
-    #     if "CROTA2" in prihdr and ("CDELT1" in prihdr) and ("CDELT2" in prihdr):
-    #         print("Computing transformation matrix elements from CDELT and CROTA2")
-    #         cd12 = abs(-1.0 * prihdr["CDELT2"] * math.sin(prihdr["CROTA2"]))
-    #         cd21 = abs(prihdr["CDELT1"] * math.sin(prihdr["CROTA2"]))
-    #         exthdr.set("CD1_1", prihdr["CDELT1"] * math.cos(prihdr["CROTA2"]), "Transformation matrix element")
-    #         exthdr.set("CD1_2", cd12, "Transformation matrix element")
-    #         exthdr.set("CD2_1", cd21, "Transformation matrix element")
-    #         exthdr.set("CD2_2", prihdr["CDELT2"] * math.cos(prihdr["CROTA2"]), "Transformation matrix element")
-    #     else:
-    #         if ("CDELT1" in prihdr) and ("CDELT2" in prihdr):
-    #             print("No rotation found: creating simple transformation matrix")
-    #             exthdr.set("CD1_1", prihdr["CDELT1"], "Transformation matrix element")
-    #             exthdr.set("CD1_2", 0.0, "Transformation matrix element")
-    #             exthdr.set("CD2_1", 0.0, "Transformation matrix element")
-    #             exthdr.set("CD2_2", prihdr["CDELT2"], "Transformation matrix element")
-    #         else:
-    #             print(RED + "No transformation matrix available." + ENDCOLOR)
-    #             sys.exit()
-
-    # --- Compute the spatial transformation matrix ---
-    if all(k in prihdr for k in ("PC1_1", "PC1_2", "PC2_1", "PC2_2")):
-        # Convert from PC to CD using the CDELT values
-        exthdr.set("CD1_1", prihdr["CDELT1"] * prihdr["PC1_1"], "Computed from PC matrix")
-        exthdr.set("CD1_2", prihdr["CDELT1"] * prihdr["PC1_2"], "Computed from PC matrix")
-        exthdr.set("CD2_1", prihdr["CDELT2"] * prihdr["PC2_1"], "Computed from PC matrix")
-        exthdr.set("CD2_2", prihdr["CDELT2"] * prihdr["PC2_2"], "Computed from PC matrix")
-        print("PC matrix converted to CD matrix")
-    elif (("CD1_1" in prihdr) and ("CD1_2" in prihdr) and ("CD2_1" in prihdr) and ("CD2_2" in prihdr)):
+    if (("CD1_1" in prihdr) and ("CD1_2" in prihdr) and ("CD2_1" in prihdr) and ("CD2_2" in prihdr)):
         print("CDi_j transformation matrix is present")
-    elif "CROTA2" in prihdr and ("CDELT1" in prihdr) and ("CDELT2" in prihdr):
-        print("Computing transformation matrix elements from CDELT and CROTA2")
-        cd12 = abs(-1.0 * prihdr["CDELT2"] * math.sin(prihdr["CROTA2"]))
-        cd21 = abs(prihdr["CDELT1"] * math.sin(prihdr["CROTA2"]))
-        exthdr.set("CD1_1", prihdr["CDELT1"] * math.cos(prihdr["CROTA2"]), "Transformation matrix element")
-        exthdr.set("CD1_2", cd12, "Transformation matrix element")
-        exthdr.set("CD2_1", cd21, "Transformation matrix element")
-        exthdr.set("CD2_2", prihdr["CDELT2"] * math.cos(prihdr["CROTA2"]), "Transformation matrix element")
-    elif ("CDELT1" in prihdr) and ("CDELT2" in prihdr):
-        print("No rotation found: creating simple transformation matrix")
-        exthdr.set("CD1_1", prihdr["CDELT1"], "Transformation matrix element")
-        exthdr.set("CD1_2", 0.0, "Transformation matrix element")
-        exthdr.set("CD2_1", 0.0, "Transformation matrix element")
-        exthdr.set("CD2_2", prihdr["CDELT2"], "Transformation matrix element")
     else:
-        print(RED + "No transformation matrix available." + ENDCOLOR)
-        sys.exit()
+        if "CROTA2" in prihdr and ("CDELT1" in prihdr) and ("CDELT2" in prihdr):
+            print("Computing transformation matrix elements from CDELT and CROTA2")
+            cd12 = abs(-1.0 * prihdr["CDELT2"] * math.sin(prihdr["CROTA2"]))
+            cd21 = abs(prihdr["CDELT1"] * math.sin(prihdr["CROTA2"]))
+            exthdr.set("CD1_1", prihdr["CDELT1"] * math.cos(prihdr["CROTA2"]), "Transformation matrix element")
+            exthdr.set("CD1_2", cd12, "Transformation matrix element")
+            exthdr.set("CD2_1", cd21, "Transformation matrix element")
+            exthdr.set("CD2_2", prihdr["CDELT2"] * math.cos(prihdr["CROTA2"]), "Transformation matrix element")
+        else:
+            if ("CDELT1" in prihdr) and ("CDELT2" in prihdr):
+                print("No rotation found: creating simple transformation matrix")
+                exthdr.set("CD1_1", prihdr["CDELT1"], "Transformation matrix element")
+                exthdr.set("CD1_2", 0.0, "Transformation matrix element")
+                exthdr.set("CD2_1", 0.0, "Transformation matrix element")
+                exthdr.set("CD2_2", prihdr["CDELT2"], "Transformation matrix element")
+            else:
+                print(RED + "No transformation matrix available." + ENDCOLOR)
+                sys.exit()
+
+    # # --- Compute the spatial transformation matrix ---
+    # if all(k in prihdr for k in ("PC1_1", "PC1_2", "PC2_1", "PC2_2")):
+    #     # Convert from PC to CD using the CDELT values
+    #     exthdr.set("CD1_1", prihdr["CDELT1"] * prihdr["PC1_1"], "Computed from PC matrix")
+    #     exthdr.set("CD1_2", prihdr["CDELT1"] * prihdr["PC1_2"], "Computed from PC matrix")
+    #     exthdr.set("CD2_1", prihdr["CDELT2"] * prihdr["PC2_1"], "Computed from PC matrix")
+    #     exthdr.set("CD2_2", prihdr["CDELT2"] * prihdr["PC2_2"], "Computed from PC matrix")
+    #     print("PC matrix converted to CD matrix")
+    # elif (("CD1_1" in prihdr) and ("CD1_2" in prihdr) and ("CD2_1" in prihdr) and ("CD2_2" in prihdr)):
+    #     print("CDi_j transformation matrix is present")
+    # elif "CROTA2" in prihdr and ("CDELT1" in prihdr) and ("CDELT2" in prihdr):
+    #     print("Computing transformation matrix elements from CDELT and CROTA2")
+    #     cd12 = abs(-1.0 * prihdr["CDELT2"] * math.sin(prihdr["CROTA2"]))
+    #     cd21 = abs(prihdr["CDELT1"] * math.sin(prihdr["CROTA2"]))
+    #     exthdr.set("CD1_1", prihdr["CDELT1"] * math.cos(prihdr["CROTA2"]), "Transformation matrix element")
+    #     exthdr.set("CD1_2", cd12, "Transformation matrix element")
+    #     exthdr.set("CD2_1", cd21, "Transformation matrix element")
+    #     exthdr.set("CD2_2", prihdr["CDELT2"] * math.cos(prihdr["CROTA2"]), "Transformation matrix element")
+    # elif ("CDELT1" in prihdr) and ("CDELT2" in prihdr):
+    #     print("No rotation found: creating simple transformation matrix")
+    #     exthdr.set("CD1_1", prihdr["CDELT1"], "Transformation matrix element")
+    #     exthdr.set("CD1_2", 0.0, "Transformation matrix element")
+    #     exthdr.set("CD2_1", 0.0, "Transformation matrix element")
+    #     exthdr.set("CD2_2", prihdr["CDELT2"], "Transformation matrix element")
+    # else:
+    #     print(RED + "No transformation matrix available." + ENDCOLOR)
+    #     sys.exit()
 
     exthdr["SPECSYS"] = prihdr["SPECSYS"]
     exthdr["RESTFREQ"] = prihdr["RESTFREQ"]
     exthdr["VELO-LSR"] = prihdr["VELO-LSR"]
-    exthdr["IMAGFREQ"] = prihdr["IMAGFREQ"]
+
+    try: 
+        exthdr["IMAGFREQ"] = prihdr["IMAGFREQ"]
+    except:
+        print('IMAGFREQ not found in header')
+        prihdr["IMAGFREQ"] = prihdr["RESTFREQ"]
+        exthdr["IMAGFREQ"] = prihdr["IMAGFREQ"]
 
     # --- Create RMS extension header ---
     extrmshdr = hdu_rmscube.header
@@ -798,6 +815,10 @@ def main():
     whitehdr["CRVAL2"] = prihdr["CRVAL2"]
     whitehdr["CRPIX2"] = prihdr["CRPIX2"]
     whitehdr["CUNIT2"] = exthdr["CUNIT2"]
+    whitehdr["CD1_1"] = exthdr["CD1_1"]
+    whitehdr["CD1_2"] = exthdr["CD1_2"]
+    whitehdr["CD2_1"] = exthdr["CD2_1"]
+    whitehdr["CD2_2"] = exthdr["CD2_2"]
 
     orighdr.set("PRODCATG", "ANCILLARY.CUBE")
 
@@ -815,8 +836,11 @@ def main():
     print(whitehdr)
 
     # --- Virtual output file names and header associations ---
-    outFluname = source + "_3DcubePh3.fits"
-    outWhitename = source + "_3DcubePh3_whitelight.fits"
+    # outFluname = source + "_3DcubePh3.fits"
+    # outWhitename = source + "_3DcubePh3_whitelight.fits"
+    outFluname = FILENAME_OUT
+    outWhitename = FILENAME_WHITE_OUT
+
     prihdr.set("ASSON1", outWhitename)
     if attlmv == "y":
         outLMVname = source + "_3Dcube_GILDASformat.lmv"
