@@ -5,7 +5,8 @@ import gc
 import os
 
 # Define directories for each batch
-batch_29157_dir = "/diskb/phase3data/ftp/programs/KIDS/batch_29157/"
+# batch_29157_dir = "/diskb/phase3data/ftp/programs/KIDS/batch_29157/"
+batch_29157_dir = "/diskb/phase3data/ftp/programs/KIDS/batch_28735/" # TEST
 batch_28735_dir = "/diskb/phase3data/ftp/programs/KIDS/batch_28735/"
 
 # Files in the new batch (batch_29157)
