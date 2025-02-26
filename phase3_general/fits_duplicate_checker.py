@@ -11,6 +11,9 @@ Example usage:
 --------------
 Run the script from the command line by specifying the input directory containing your FITS files. For example:
 
+    python fits_duplicate_checker.py /input_dir/
+
+e.g. for KiDS:
     python fits_duplicate_checker.py /diskb/phase3data/ftp/programs/KIDS/batch_29157/
 
 This command will process all FITS files in the specified directory, pre-check them for the header condition, and then check for duplicate IDs.
