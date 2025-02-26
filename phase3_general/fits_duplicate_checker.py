@@ -1,3 +1,24 @@
+"""
+fits_duplicate_checker.py
+-------------------------
+This script processes FITS files in a specified directory to:
+  - Pre-check each file to ensure the header 'PRODCATG' equals 'SCIENCE.CATALOGTILE'
+  - Extract the 'ID' column from valid FITS files
+  - Identify and report duplicate IDs across all processed files
+  - Print informative messages for files that are skipped or contain duplicates
+
+Example usage:
+--------------
+Run the script from the command line by specifying the input directory containing your FITS files. For example:
+
+    python fits_duplicate_checker.py /diskb/phase3data/ftp/programs/KIDS/batch_29157/
+
+This command will process all FITS files in the specified directory, pre-check them for the header condition, and then check for duplicate IDs.
+
+Written by Ashley Barnes on 2025-02-26.
+"""
+
+
 import sys
 import glob
 import gc
