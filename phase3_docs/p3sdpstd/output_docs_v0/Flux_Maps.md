@@ -3,17 +3,17 @@
 ## 1. Introduction
 The Phase 3 process facilitates the submission, validation, and ingestion of science data products (SDPs) into the ESO Science Archive. This document provides a streamlined guide for submitting **flux maps**, ensuring compliance with ESO/SDP standards while simplifying the process for users.
 
-Flux maps are specialized imaging products where pixel values represent flux measurements in physical units, often derived from calibrated observations. They must follow specific formatting and metadata requirements to be valid for ESO archive ingestion.
+Flux maps are specialized imaging products where pixel values represent flux measurements in physical units (e.g. milli-Jansky per beam) - as, for example, observations using the bolometer arrays LABOCA and ARTEMIS at the APEX 12-metre telescope. They must follow specific formatting and metadata requirements to be valid for ESO archive ingestion.
 
 ## 2. Flux Map Submission Requirements
 
 ### 2.1 General Data Format
 - Flux maps must be provided in **FITS format** with appropriate metadata.
 - Supported formats:
-  - **Single images**: Simple FITS (SCIENCE.IMAGE.FLUXMAP)
+  - **Single images**: Simple FITS (SCIENCE.IMAGE.FLUXMAP) -- focus of this document
   - **Multi-extension images**: Multi-Extension FITS (MEF)
 - The **BUNIT** keyword must specify the physical units of flux (e.g., Jy/pixel, W/m²/sr, or MJy/sr).
-- All flux maps must include associated error and quality maps.
+- Flux maps can include associated error and quality maps (e.g. via MEF images).
 
 ### 2.2 Astrometry Requirements
 - World Coordinate System (WCS) must follow the **FITS convention**.
