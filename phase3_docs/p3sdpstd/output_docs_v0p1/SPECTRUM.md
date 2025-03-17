@@ -7,7 +7,110 @@ Spectral data products include one-dimensional spectra, extracted spectra from i
 
 ## 2. Spectral Data Submission Requirements
 
+**Spectrum** - Phase 3 Science Data Products (SDP) Submission Guide
+
+## 1. Introduction
+The Phase 3 process facilitates the submission, validation, and ingestion of science data products (SDPs) into the ESO Science Archive. This document provides a streamlined guide for submitting **spectral data**, ensuring compliance with ESO/SDP standards while simplifying the process for users.
+
+Spectral data products include one-dimensional spectra from single-object and multi-object spectroscopic observations. These must follow strict formatting and metadata requirements to ensure archive compatibility.
+
+## 2. Spectral Data Submission Requirements
+
 ### 2.1 General Data Format
+- Spectral data must be provided in **FITS format** with appropriate metadata.
+- The **Primary HDU contains no data (`NAXIS=0`)**.
+- The **spectrum data resides in an extension** formatted as a **binary table (BINTABLE)**.
+- Supported format:
+  - **SCIENCE.SPECTRUM**: 1D extracted spectrum
+- This section applies to individual spectra originating from single as well as multi-object spectroscopic observations.
+- Each one-dimensional spectrum shall be stored in the **spectrum binary table format**.
+- Although that format allows storing multiple science spectra within the same FITS file, **each FITS file shall contain only one science spectrum**.
+- Information associated with the science spectrum shall be stored within the **same extension** as the main science spectrum, including:
+  - Sky background-subtracted spectrum
+  - Error spectrum
+  - Data quality information
+  - Best-fitted model for the continuum
+- 2D spectral frames may be submitted in addition as associated files.
+- Only **standard BINTABLE extensions** are allowed, implying `PCOUNT=0` and `GCOUNT=1`.
+- The spectrum binary table format consists of:
+  - A **Primary Header** with no data (`NAXIS=0`).
+  - A **single extension** containing a **BINTABLE** with `NAXIS=2`, where the data arrays are stored as vectors in single cells, meaning `NAXIS2=1`.
+  - Each field of the BINTABLE must be further described in the extension header, as specified in Section 5.18.
+  - **Mandatory fields**: Spectral coordinate (`WAVE`, `FREQ`, or `ENER`), `FLUX`, and `ERR` (in that order).
+  - Additional fields may be added, but they must be properly defined in terms of **type, format, unit, and UCD**, as described in the release documentation.
+
+### 2.2 Spectral Data Model and VO Compliance
+- **Case 1: Single spectral coordinate array and single flux array**
+  - The **IVOA Spectrum Data Model v1.1** must be used to describe arrays.
+  - The `VOCLASS` keyword in the first extension header must be set to `'SPECTRUM v1.0'`.
+  - The following keywords must be defined:
+    ```
+    VOCLASS = 'SPECTRUM v1.0' / VO Data Model
+    TTYPE1  = 'WAVE '  / Label for field 1
+    TTYPE2  = 'FLUX '  / Label for field 2
+    TTYPE3  = 'ERR '   / Label for field 3
+    TUTYP1  = 'Spectrum.Data.SpectralAxis.Value'
+    TUTYP2  = 'Spectrum.Data.FluxAxis.Value'
+    TUTYP3  = 'Spectrum.Data.FluxAxis.Accuracy.StatError'
+    ```
+
+- **Case 2: Multiple flux arrays computed with different recipes**
+  - The **IVOA Spectrum Data Model v2.0** must be used.
+  - The `VOCLASS` keyword must be set to `'SPECTRUM v2.0'`.
+  - The submitter must select which flux column is the **default flux**.
+  - Example:
+    ```
+    VOCLASS = 'SPECTRUM v2.0' / VO Data Model
+    TTYPE1  = 'WAVE '  / Label for field 1
+    TTYPE2  = 'FLUX_A '  / Flux from recipe A
+    TTYPE3  = 'ERR_A '   / Error for FLUX_A
+    TTYPE4  = 'FLUX_B '  / Flux from recipe B
+    TTYPE5  = 'ERR_B '   / Error for FLUX_B
+    TUTYP1  = 'spec:Data.SpectralAxis.Value'
+    TUTYP2  = 'spec:Data.FluxAxis.Value'
+    TUTYP3  = 'spec:Data.FluxAxis.Accuracy.StatError'
+    TUTYP4  = 'eso:Data.FluxAxis.Value'
+    TUTYP5  = 'eso:Data.FluxAxis.Accuracy.StatError'
+    ```
+
+- **Continuum Normalized Spectra**
+  - If a normalized spectrum is published as the main flux, but the unnormalized flux is also stored, the **CONTNORM** keyword must be included in the **Primary Header**:
+    ```
+    CONTNORM = T
+    ```
+  - Example extension header:
+    ```
+    VOCLASS = 'SPECTRUM v2.0' / VO Data Model
+    TTYPE1  = 'WAVE '       / Label for field 1
+    TTYPE2  = 'FLUX_NORM'   / Normalized flux
+    TTYPE3  = 'ERR_NORM'    / Normalized flux error
+    TTYPE4  = 'FLUX '       / Unnormalized flux
+    TTYPE5  = 'ERR '        / Unnormalized flux error
+    ```
+
+### 2.3 Additional Requirements
+- All data arrays in the **first row of the binary table must have the same number of points** (`NELEM`).
+- All `EXTNAME` keyword values **must be unique** within a given FITS file.
+- If present, there may be at most one `BGFLUX` field.
+- For data not normalized to the continuum, `TUCD` and `TUNIT` of `BGFLUX` must match those of `FLUX`.
+- To differentiate between air and vacuum wavelengths, `TUCD1` must be set accordingly:
+  - **Air Wavelength:**
+    ```
+    TTYPE1 = 'WAVE'
+    TUCD1  = 'em.wl;obs.atmos' / Air wavelength
+    ```
+  - **Vacuum Wavelength:**
+    ```
+    TTYPE1 = 'WAVE'
+    TUCD1  = 'em.wl' / Vacuum wavelength
+    ```
+  - `WAVELMIN` and `WAVELMAX` must be consistent with the spectral axis definition.
+
+These updates align with Phase 3 requirements and ensure full VO-compliance for spectral data submissions.
+
+
+
+<!-- ### 2.1 General Data Format
 - Spectral data must be provided in **FITS format** with appropriate metadata.
 - The **spectrum data resides in the Primary HDU**.
 - Supported formats:
@@ -40,7 +143,7 @@ Spectral data products include one-dimensional spectra, extracted spectra from i
 ### 2.4 Temporal Information
 - Observation time must be recorded using **Modified Julian Date (MJD)**.
 - `MJD-END` must be greater than or equal to `MJD-OBS`.
-- `EXPTIME` (exposure time per spectral bin) and `TEXPTIME` (total exposure time) must be included.
+- `EXPTIME` (exposure time per spectral bin) and `TEXPTIME` (total exposure time) must be included. -->
 
 ## 3. Required and Recommended FITS Header Keywords
 
@@ -62,57 +165,58 @@ Spectral data products include one-dimensional spectra, extracted spectra from i
 
 #### 3.1.2 Primary HDU Keywords
 
-| Keyword  | Description | Type |
-|----------|-------------|------|
-| `PRODCATG` | Data product category | Mandatory |
-| `ASSOCi` | Association identifier | Mandatory (31) |
-| `ASSONi` | Associated file name | Mandatory (32) |
-| `ASSOMi` | MD5 checksum of associated file | Mandatory (31) |
-| `ORIGIN` | Institution responsible for data | Mandatory |
-| `TELESCOP` | Telescope name | Mandatory |
-| `INSTRUME` | Instrument name | Mandatory |
-| `OBJECT` | Target name | Mandatory |
-| `RA`, `DEC` | Right Ascension and Declination | Mandatory |
-| `EQUINOX` | Equinox of coordinates | Mandatory (37) |
-| `RADESYS` | Coordinate reference system | Mandatory |
-| `TIMESYS` | Time system used | Mandatory (38) |
-| `EXPTIME` | Exposure time per spectral bin | Mandatory |
-| `TEXPTIME` | Total exposure time | Mandatory |
-| `MJD-OBS` | Modified Julian Date of observation start | Mandatory |
-| `MJD-END` | Modified Julian Date of observation end | Mandatory |
-| `PROG_ID` | Program ID | Mandatory ESO |
-| `OBIDi` | Observation ID | Mandatory ESO |
-| `NCOMBINE` | Number of combined exposures | Mandatory ESO |
-| `OBSTECH` | Observation technique | Mandatory |
-| `FLUXCAL` | Flux calibration status | Mandatory |
-| `PROCSOFT` | Data processing software | Mandatory |
-| `REFERENC` | Bibliographic reference | Mandatory (40) |
-| `PROVi` | Provenance information | Mandatory ESO |
-| `BUNIT` | Physical units of flux | Not Allowed |
-| `CDi_j` | WCS transformation matrix elements | Not Allowed |
-| `SPECSYS` | Spectral reference system | Mandatory |
-| `EXT_OBJ` | External object identifier | Mandatory (42) |
-| `CONTNORM` | Continuum normalization factor | Mandatory |
-| `TOT_FLUX` | Total flux value | Mandatory |
-| `FLUXERR` | Flux uncertainty per bin | Mandatory (43) |
-| `WAVELMIN` | Minimum wavelength coverage | Mandatory |
-| `WAVELMAX` | Maximum wavelength coverage | Mandatory |
-| `LAMRMS` | RMS deviation of wavelength solution | Optional |
-| `LAMNLIN` | Number of fitted wavelength lines | Optional |
-| `SPEC_BIN` | Spectral bin width | Mandatory |
-| `SPEC_ERR` | Spectral error estimate | Recommended |
-| `SPEC_SYE` | Systematic spectral error | Recommended |
-| `RA_ERR` | RA uncertainty | Recommended |
-| `DEC_ERR` | DEC uncertainty | Recommended |
-| `STOKES` | Stokes parameter | Ask Support |
-| `SNR` | Signal-to-noise ratio | Mandatory |
-| `SPEC_RES` | Spectral resolution | Mandatory |
-| `STREHL` | Strehl ratio (AO) | Mandatory (51) |
-| `ARCFILE` | Archive file name | Reserved |
-| `CHECKSUM` | FITS checksum | Mandatory |
-| `DATASUM` | FITS data checksum | Mandatory |
-| `ORIGFILE` | Original file name | Reserved |
-| `P3ORIG` | Original Phase 3 identifier | Reserved |
+| Keyword  | Description | Type |  
+|----------|-------------|------|  
+| `PRODCATG` | Data product category | Mandatory |  
+| `ASSOCi` | Association identifier | Mandatory (31) |  
+| `ASSONi` | Associated file name | Mandatory (32) |  
+| `ASSOMi` | MD5 checksum of associated file | Mandatory (31) |  
+| `ORIGIN` | Institution responsible for data | Mandatory |  
+| `TELESCOP` | Telescope name | Mandatory |  
+| `INSTRUME` | Instrument name | Mandatory |  
+| `OBJECT` | Target name | Mandatory |  
+| `RA`, `DEC` | Right Ascension and Declination | Mandatory |  
+| `EQUINOX` | Equinox of coordinates | Mandatory (37) |  
+| `RADESYS` | Coordinate reference system | Mandatory |  
+| `TIMESYS` | Time system used | Mandatory (38) |  
+| `EXPTIME` | Exposure time per spectral bin | Mandatory |  
+| `TEXPTIME` | Total exposure time | Mandatory |  
+| `MJD-OBS` | Modified Julian Date of observation start | Mandatory |  
+| `MJD-END` | Modified Julian Date of observation end | Mandatory |  
+| `PROG_ID` | Program ID | Mandatory ESO |  
+| `OBIDi` | Observation ID | Mandatory ESO |  
+| `NCOMBINE` | Number of combined exposures | Mandatory ESO |  
+| `OBSTECH` | Observation technique | Mandatory |  
+| `FLUXCAL` | Flux calibration status | Mandatory |  
+| `PROCSOFT` | Data processing software | Mandatory |  
+| `REFERENC` | Bibliographic reference | Mandatory (40) |  
+| `PROVi` | Provenance information | Mandatory ESO |  
+| `BUNIT` | Physical units of flux | Not Allowed |  
+| `CDi_j` | WCS transformation matrix elements | Not Allowed |  
+| `SPECSYS` | Spectral reference system | Mandatory |  
+| `EXT_OBJ` | External object identifier | Mandatory (42) |  
+| `CONTNORM` | Continuum normalization factor | Mandatory |  
+| `TOT_FLUX` | Total flux value | Mandatory |  
+| `FLUXERR` | Flux uncertainty per bin | Mandatory (43) |  
+| `WAVELMIN` | Minimum wavelength coverage | Mandatory |  
+| `WAVELMAX` | Maximum wavelength coverage | Mandatory |  
+| `LAMRMS` | RMS deviation of wavelength solution | Optional |  
+| `LAMNLIN` | Number of fitted wavelength lines | Optional |  
+| `SPEC_BIN` | Spectral bin width | Mandatory |  
+| `SPEC_ERR` | Spectral error estimate | Recommended |  
+| `SPEC_SYE` | Systematic spectral error | Recommended |  
+| `RA_ERR` | RA uncertainty | Recommended |  
+| `DEC_ERR` | DEC uncertainty | Recommended |  
+| `STOKES` | Stokes parameter | Ask Support |  
+| `SNR` | Signal-to-noise ratio | Mandatory |  
+| `SPEC_RES` | Spectral resolution | Mandatory |  
+| `STREHL` | Strehl ratio (AO) | Mandatory (51) |  
+| `ARCFILE` | Archive file name | Reserved |  
+| `CHECKSUM` | FITS checksum | Mandatory |  
+| `DATASUM` | FITS data checksum | Mandatory |  
+| `ORIGFILE` | Original file name | Reserved |  
+| `P3ORIG` | Original Phase 3 identifier | Reserved |  
+| `NOESODAT` | Non-ESO proprietary data flag | Mandatory (59) |  
 
 #### **Notes:**
 
@@ -124,6 +228,7 @@ Spectral data products include one-dimensional spectra, extracted spectra from i
 - **(42)** Mandatory for externally submitted data products.
 - **(43)** Applies to FLUXCAL='ABSOLUTE'. If FLUXCAL='UNCALIBRATED', set FLUXERR=-1.
 - **(51)** Mandatory for adaptive optics (AO) observations.
+- **(59)** Set NOESODAT=T for non-ESO proprietary data.
 
 #### 3.2.1 Extension HDU Keywords (Generic FITS Standard)
 
@@ -143,25 +248,77 @@ Spectral data products include one-dimensional spectra, extracted spectra from i
 
 #### 3.2.2 Extension HDU Keywords
 
-| Keyword  | Description | Type |
-|----------|-------------|------|
-| `RA`, `DEC` | Right Ascension and Declination | Mandatory |
-| `NELEM` | Number of elements in the data array | Mandatory |
-| `VOCLASS` | Virtual Observatory classification | Mandatory |
-| `VOPUB` | Virtual Observatory publication status | Mandatory |
-| `TITLE` | Title of the spectrum | Mandatory |
-| `APERTURE` | Aperture size used during observation | Mandatory |
-| `TELAPSE` | Elapsed observation time | Mandatory |
-| `TMID` | Midpoint time of observation | Mandatory |
-| `SPEC_VAL` | Central spectral value | Mandatory |
-| `SPEC_BW` | Spectral bandwidth | Mandatory |
-| `ARCFILE` | Archive file name | Reserved |
-| `CHECKSUM` | FITS checksum | Mandatory |
-| `DATASUM` | FITS data checksum | Mandatory |
-| `ORIGFILE` | Original file name | Reserved |
-| `P3ORIG` | Original Phase 3 identifier | Reserved |
+| Keyword  | Description | Type |  
+|----------|-------------|------|  
+| `RA`, `DEC` | Right Ascension and Declination | Mandatory |  
+| `NELEM` | Number of elements in the data array | Mandatory |  
+| `VOCLASS` | Virtual Observatory classification | Mandatory |  
+| `VOPUB` | Virtual Observatory publication status | Mandatory |  
+| `TITLE` | Title of the spectrum | Mandatory |  
+| `APERTURE` | Aperture size used during observation | Mandatory |  
+| `TELAPSE` | Elapsed observation time | Mandatory |  
+| `TMID` | Midpoint time of observation | Mandatory |  
+| `SPEC_VAL` | Central spectral value | Mandatory |  
+| `SPEC_BW` | Spectral bandwidth | Mandatory |  
+| `ARCFILE` | Archive file name | Reserved |  
+| `CHECKSUM` | FITS checksum | Mandatory |  
+| `DATASUM` | FITS data checksum | Mandatory |  
+| `ORIGFILE` | Original file name | Reserved |  
+| `P3ORIG` | Original Phase 3 identifier | Reserved |  
+| `TFIELDS` | Number of columns in binary table | Mandatory |  
+| `TTYPEi` | Column name | Mandatory |  
+| `TFORMi` | Data format of column | Mandatory |  
+| `TCOMMi` | Comment on column usage | Optional |  
+| `TUNITi` | Units of column values | Mandatory (61) |  
+| `TUTYPi` | Utype of column | Mandatory (62) |  
+| `TUCDi` | Unified Content Descriptor (UCD) | Mandatory |  
+| `TDMINi` | Minimum value in data array | Mandatory (63) |  
+| `TDMAXi` | Maximum value in data array | Mandatory (63) |  
+| `EXTNAME` | Extension name | Mandatory (65) |  
 
-## Additional Considerations
+#### **Notes:**
+
+- **(61)** The unit of each column must follow SI standards and be properly defined using TUNITi.
+- **(62)** TUTYPi must be set following IVOA Utype conventions (e.g., 'Spectrum.Data.SpectralAxis.Value').
+- **(63)** TDMINi and TDMAXi should be specified when applicable to define valid data ranges in the column.
+- **(65)** EXTNAME must be unique within a given FITS file.
+
+#### 3.2.2 `TTYPEi` keyword values 
+
+| `TTYPEi` Value | Description |  
+|---------------|-------------|  
+| `WAVE` | The wavelength array |  
+| `FREQ` | The frequency array |  
+| `ENER` | The energy array |  
+| `FLUX` | The data spectrum: either the sky-background subtracted spectrum or the continuum-normalized spectrum. |  
+| `ERR` | The error spectrum. Errors must be provided in the same units as the flux array and cannot be expressed as a percentage. |  
+| `QUAL` | An array of integer values: 0 = good data, 1 = bad (unspecified reason), other positive integers flag bad or dubious data. If absent, all values are assumed good. Encoding should use powers of 2 for quality conditions. |  
+| `BGFLUX` | The sky background spectrum |  
+| `CONTINUUM` | The continuum spectrum |  
+| `EXPOSURE` | The exposure array for combined spectra of different wavelength coverage | 
+
+
+#### Notes for Extension HDU Table Column Definitions  
+
+- **Wavelength Units:**  
+  - When measured in air: `TUCD1 = 'em.wl;obs.atmos'`  
+  - When measured in vacuum: `TUCD1 = 'em.wl'`  
+  - `WAVELMIN` and `WAVELMAX` must be consistent with the spectral axis definition.  
+
+- **Error Representation:**  
+  - `ERR` values **must be in the same units as `FLUX`**.  
+  - Percentage-based errors **are not allowed**.  
+
+- **Quality Encoding (`QUAL`):**  
+  - `0` = Good data  
+  - `1` = Bad for an unspecified reason  
+  - Values **greater than 1** can be used for specific flags (preferably using powers of 2).  
+
+- **Flux Representation:**  
+  - If a **continuum-normalized spectrum** is used, the **CONTNORM** keyword must be set to `T` in the **Primary HDU**.  
+  - The **normalized flux** must be stored in the **FLUX_NORM** column, with an additional **FLUX** column for the unnormalized data.  
+
+#### Additional Considerations
 
 - **Consistency Across HDUs:**  
   Keywords such as `RA`, `DEC`, `CHECKSUM`, and `DATASUM` must have identical values in both the primary and extension headers to maintain consistency.
@@ -173,17 +330,8 @@ Spectral data products include one-dimensional spectra, extracted spectra from i
   Prior to submission, run your FITS files through the ESO-provided validation tools to ensure that all header keywords comply with Phase 3 SDP standards.
 
 For further details and examples of FITS headers, please refer to the [ESO Phase 3 FAQ](https://www.eso.org/sci/observing/phase3/faq.html) and the [ESO Phase 3 Overview](https://www.eso.org/sci/observing/phase3/overview.html).
-## 4. File Structure and Validation
-- **Single Spectrum FITS Format**: Data is stored in the primary HDU.
-- **Multi-Extension FITS (MEF) Format**:
-  - Science data in separate HDU.
-  - Error estimates, variance, and quality maps stored in additional HDUs.
-- Keywords for MEF files:
-  - `SCIDATA`: Science data extension name
-  - `ERRDATA`: Error data extension name
-  - `QUALDATA`: Quality map extension name
 
-## 5. Summary of Best Practices
+## 4. Summary of Best Practices
 - Follow the **FITS keyword requirements** for wavelength calibration, flux calibration, and data quality.
 - Use **Multi-Extension FITS (MEF)** for spectral data with multiple layers.
 - Ensure metadata consistency and validation before submission.

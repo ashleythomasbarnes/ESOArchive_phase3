@@ -69,7 +69,7 @@ Assuming the **flux map data resides in the Primary HDU** - see **Multi-extensio
 | `ASSOCi` | Association identifier | Mandatory (31) |
 | `ASSONi` | Associated file name | Mandatory (33) |
 | `ASSOMi` | MD5 checksum of associated file | Mandatory (31) |
-| `ORIGIN` | Institution responsible for data | Mandatory |
+| `ORIGIN` | Institution responsible for data (e.g. **APEX**) | Mandatory |
 | `TELESCOP` | Telescope name | Mandatory |
 | `INSTRUME` | Instrument name | Mandatory |
 | `FILTER` | Filter used during observation | Mandatory |
