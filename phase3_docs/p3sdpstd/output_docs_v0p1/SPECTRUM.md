@@ -1,43 +1,30 @@
 # **Spectrum** - Phase 3 Science Data Products (SDP) Submission Guide
 
 ## 1. Introduction
-The Phase 3 process facilitates the submission, validation, and ingestion of science data products (SDPs) into the ESO Science Archive. This document provides a streamlined guide for submitting **spectral data**, ensuring compliance with ESO/SDP standards while simplifying the process for users.
+The Phase 3 process facilitates the submission, validation, and ingestion of science data products (SDPs) into the ESO Science Archive. This document provides a streamlined guide for submitting **SPECTRUM** data, ensuring compliance with ESO/SDP standards while simplifying the process for users.
 
 Spectral data products include one-dimensional spectra, extracted spectra from integral field units, and multi-object spectroscopy. These must follow strict formatting and metadata requirements to ensure archive compatibility.
 
 ## 2. Spectral Data Submission Requirements
 
-**Spectrum** - Phase 3 Science Data Products (SDP) Submission Guide
-
-## 1. Introduction
-The Phase 3 process facilitates the submission, validation, and ingestion of science data products (SDPs) into the ESO Science Archive. This document provides a streamlined guide for submitting **spectral data**, ensuring compliance with ESO/SDP standards while simplifying the process for users.
-
-Spectral data products include one-dimensional spectra from single-object and multi-object spectroscopic observations. These must follow strict formatting and metadata requirements to ensure archive compatibility.
-
-## 2. Spectral Data Submission Requirements
-
 ### 2.1 General Data Format
-- Spectral data must be provided in **FITS format** with appropriate metadata.
-- The **Primary HDU contains no data (`NAXIS=0`)**.
-- The **spectrum data resides in an extension** formatted as a **binary table (BINTABLE)**.
 - Supported format:
-  - **SCIENCE.SPECTRUM**: 1D extracted spectrum
-- This section applies to individual spectra originating from single as well as multi-object spectroscopic observations.
-- Each one-dimensional spectrum shall be stored in the **spectrum binary table format**.
-- Although that format allows storing multiple science spectra within the same FITS file, **each FITS file shall contain only one science spectrum**.
-- Information associated with the science spectrum shall be stored within the **same extension** as the main science spectrum, including:
-  - Sky background-subtracted spectrum
-  - Error spectrum
-  - Data quality information
-  - Best-fitted model for the continuum
-- 2D spectral frames may be submitted in addition as associated files.
-- Only **standard BINTABLE extensions** are allowed, implying `PCOUNT=0` and `GCOUNT=1`.
-- The spectrum binary table format consists of:
+  - **SCIENCE.SPECTRUM**: 1D extracted spectrum.
+- Spectral data must be provided in **FITS format** with appropriate metadata. 
   - A **Primary Header** with no data (`NAXIS=0`).
-  - A **single extension** containing a **BINTABLE** with `NAXIS=2`, where the data arrays are stored as vectors in single cells, meaning `NAXIS2=1`.
-  - Each field of the BINTABLE must be further described in the extension header, as specified in Section 5.18.
-  - **Mandatory fields**: Spectral coordinate (`WAVE`, `FREQ`, or `ENER`), `FLUX`, and `ERR` (in that order).
-  - Additional fields may be added, but they must be properly defined in terms of **type, format, unit, and UCD**, as described in the release documentation.
+  - A **single Extension** containing a **BINTABLE** with `NAXIS=2`, where the data arrays are stored as vectors in single cells, meaning `NAXIS2=1`.
+  - Each field of the **BINTABLE** must be further described in the extension header.
+  - Only **standard BINTABLE extensions** are allowed, implying `PCOUNT=0` and `GCOUNT=1`.
+- Information associated with the science spectrum shall be stored within the **same extension** as the main science spectrum, including:
+  - Spectrum - `FLUX`
+  - Error spectrum - `ERR`
+  - Data quality information - `QUAL`
+  - Sky background - `BGFLUX`
+  - Best-fitted model for the continuum - `CONTINUUM`
+  - The exposure array for e.g. combined spectra of different wavelength
+coverage - `EXPOSURE`
+- 2D spectral frames may be submitted in addition as associated files.
+- The **BUNIT** keyword must specify the physical units of flux (e.g., erg/s/cm²/Å, W/m²/Hz) - if spectral data have been calibrated to absolute flux density. 
 
 ### 2.2 Spectral Data Model and VO Compliance
 - **Case 1: Single spectral coordinate array and single flux array**
@@ -81,11 +68,21 @@ Spectral data products include one-dimensional spectra from single-object and mu
   - Example extension header:
     ```
     VOCLASS = 'SPECTRUM v2.0' / VO Data Model
-    TTYPE1  = 'WAVE '       / Label for field 1
-    TTYPE2  = 'FLUX_NORM'   / Normalized flux
-    TTYPE3  = 'ERR_NORM'    / Normalized flux error
-    TTYPE4  = 'FLUX '       / Unnormalized flux
-    TTYPE5  = 'ERR '        / Unnormalized flux error
+    TTYPE1 = 'WAVE ' / Label for field 1
+    TTYPE2 = 'FLUX_NORM' / Label for field 2
+    TTYPE3 = 'ERR_NORM' / Label for field 3
+    TTYPE4 = 'FLUX ' / Label for field 4
+    TTYPE5 = 'ERR ' / Label for field 5
+    TUTYP1 = 'spec:Data.SpectralAxis.Value'
+    TUTYP2 = 'spec:Data.FluxAxis.Value'
+    TUTYP3 = 'spec:Data.FluxAxis.Accuracy.StatError'
+    TUTYP4 = 'eso:Data.FluxAxis.Value'
+    TUTYP5 = 'eso:Data.FluxAxis.Accuracy.StatError'
+    TUCD1 = 'em.wl;obs.atmos' / em.wl: vacuum, em.wl;obs.atmos: air
+    TUCD2 = 'phot.flux.density;em.wl;arith.ratio;meta.main'
+    TUCD3 = 'stat.error;phot.flux.density;em.ql;arith.ratio;meta.main'
+    TUCD4 = 'phot.flux.density;em.wl'
+    TUCD5 = 'stat.error;phot.flux.density;em.ql'
     ```
 
 ### 2.3 Additional Requirements
@@ -284,6 +281,8 @@ These updates align with Phase 3 requirements and ensure full VO-compliance for 
 - **(65)** EXTNAME must be unique within a given FITS file.
 
 #### 3.2.2 `TTYPEi` keyword values 
+
+Example usage in header: `TTYPE1 = 'WAVE'` for spectral axis given in wavelength.
 
 | `TTYPEi` Value | Description |  
 |---------------|-------------|  
