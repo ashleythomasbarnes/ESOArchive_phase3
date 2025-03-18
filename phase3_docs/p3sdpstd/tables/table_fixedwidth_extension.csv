@@ -1,4 +1,5 @@
 |   # |      Column Name | IMAGE (single) | IMAGE (single) MEF format | MEFIMAGE (mosaic) MEF format | IMAGE.FLUXMAP | SPECTRUM | CUBE.IFS | VISIBILITY | SRCTBL | MCATALOG | CATALOGTILE |   CATALOG |
+|   9 |           OBJECT |             NA |                        NA |                           NA |            NA |       MM |       NA |         NA |     NA |       NA |          NA |        NA |
 |  10 |           RA DEC |             NA |                        NA |                           NA |            NA |       MM |       NA |         NA |     NA |       NA |          NA |        NA |
 |  26 |            BUNIT |             NA |                        MM |                           MM |            NA |       NA |       MM |         NA |     NA |       NA |          NA |        NA |
 |  31 |           CRVALi |             NA |                        MM |                           MM |            NA |       NA |       MM |         NA |     NA |       NA |          NA |        NA |

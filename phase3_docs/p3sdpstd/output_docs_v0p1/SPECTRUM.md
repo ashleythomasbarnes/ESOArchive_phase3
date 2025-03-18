@@ -191,9 +191,9 @@ These updates align with Phase 3 requirements and ensure full VO-compliance for 
 | `BUNIT` | Physical units of flux | Not Allowed |  
 | `CDi_j` | WCS transformation matrix elements | Not Allowed |  
 | `SPECSYS` | Spectral reference system | Mandatory |  
-| `EXT_OBJ` | External object identifier | Mandatory (42) |  
+| `EXT_OBJ` | Extended object (TRUE), Pointlike (FALSE) | Mandatory (42) |  
 | `CONTNORM` | Continuum normalization factor | Mandatory |  
-| `TOT_FLUX` | Total flux value | Mandatory |  
+| `TOT_FLUX` | Total flux flag (TRUE/FALSE) | Mandatory |  
 | `FLUXERR` | Flux uncertainty per bin | Mandatory (43) |  
 | `WAVELMIN` | Minimum wavelength coverage | Mandatory |  
 | `WAVELMAX` | Maximum wavelength coverage | Mandatory |  
@@ -223,7 +223,7 @@ These updates align with Phase 3 requirements and ensure full VO-compliance for 
 - **(38)** Mandatory if the system used is other than UTC.
 - **(40)** If a refereed publication is not available at the time of the data release, this value can be left empty.
 - **(42)** Mandatory for externally submitted data products.
-- **(43)** Applies to FLUXCAL='ABSOLUTE'. If FLUXCAL='UNCALIBRATED', set FLUXERR=-1.
+- **(43)** Applies to `FLUXCAL='ABSOLUTE'` (must be case if `TOT_FLUX=TRUE`). If `FLUXCAL='UNCALIBRATED'`, set `FLUXERR=-1`.
 - **(51)** Mandatory for adaptive optics (AO) observations.
 - **(59)** Set NOESODAT=T for non-ESO proprietary data.
 
@@ -246,13 +246,14 @@ These updates align with Phase 3 requirements and ensure full VO-compliance for 
 #### 3.2.2 Extension HDU Keywords
 
 | Keyword  | Description | Type |  
-|----------|-------------|------|  
+|----------|-------------|------| 
+| `OBJECT` | Target name (must match primary) | Mandatory |   
 | `RA`, `DEC` | Right Ascension and Declination | Mandatory |  
 | `NELEM` | Number of elements in the data array | Mandatory |  
 | `VOCLASS` | Virtual Observatory classification | Mandatory |  
-| `VOPUB` | Virtual Observatory publication status | Mandatory |  
-| `TITLE` | Title of the spectrum | Mandatory |  
-| `APERTURE` | Aperture size used during observation | Mandatory |  
+| `VOPUB` | Name of the publisher - `'ESO/SAF'` | Mandatory |  
+| `TITLE` | Title of the dataset | Mandatory |  
+| `APERTURE` | Aperture size used during observation in degrees | Mandatory |  
 | `TELAPSE` | Elapsed observation time | Mandatory |  
 | `TMID` | Midpoint time of observation | Mandatory |  
 | `SPEC_VAL` | Central spectral value | Mandatory |  
