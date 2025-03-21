@@ -5,25 +5,32 @@ Contact: pvenegas@eso.org, tstanke@mpe.mpg.de
 Creation: 2020-07-13; Updated: 2021-08-13
 """
 
-import os
-import sys
-import math
-import copy
-import hashlib
-import datetime
-import pathlib
-import re
+##########################################
+# TO DO 
+# - Pull this from TAP but need ISTs for this... (currently hardcoded)
+##########################################
 
-import numpy as np
-from astropy.io import fits
-from astropy.time import Time
-from astropy import units as u
-from astropy.wcs import WCS
-from astropy.coordinates import SkyCoord
+# Imports
+import os # For file handling 
+import sys # For system handling
+import math # For mathematical operations
+import copy # For copying objects
+import hashlib # For hashing
 
-from spectral_cube import SpectralCube
-from reproject import reproject_interp
-from reproject.mosaicking import find_optimal_celestial_wcs
+import numpy as np # For numerical operations
+from astropy.io import fits # For FITS file handling
+from astropy.time import Time # For time handling
+from astropy import units as u # For units
+from astropy.table import Table # For table handling
+# from astropy.wcs import WCS # For World Coordinate System
+from astropy.coordinates import SkyCoord # For sky coordinates
+from astropy.io.votable import parse_single_table # For VOTable parsing
+
+import urllib.request # For URL handling
+import urllib.parse # For URL parsing
+from io import BytesIO # For byte handling
+
+from pyvo.dal import tap
 
 # Colors for printing messages
 RED = "\033[31m"       # For errors
@@ -37,10 +44,12 @@ ENDCOLOR = "\033[0m"
 # CONFIGURATION: Set input parameters here.
 ##########################################
 # Set the names of the input FITS files (must be present in the current directory)
-SPEC_IN = "G030_13CO21_Tmb_DR1.fits"           # Science cube file
-RMS_IN = "G030_13CO21_Tmb_DR1.fits"            # Error (rms) cube file
-FILENAME_OUT = SPEC_IN.split('_Tmb_DR1.fits')[0]+'_13CO21_P3.fits'
-FILENAME_WHITE_OUT = SPEC_IN.split('_Tmb_DR1.fits')[0]+'_13CO21_P3_whitelight.fits'
+SPEC_IN = "./data/G000_13CO21_Tmb_DR1.fits"           # Science cube file
+RMS_IN =  "./data/G000_13CO21_Tmb_DR1_RMSCUBE.fits"            # Error (rms) cube file
+
+# Set the names of the output FITS files
+FILENAME_OUT = SPEC_IN.split('_Tmb_DR1.fits')[0]+'_P3.fits'
+FILENAME_WHITE_OUT = SPEC_IN.split('_Tmb_DR1.fits')[0]+'_P3_whitelight.fits'
 
 # LMV file association (if applicable)
 ASSOCIATE_LMV = False                       # Set True if you want to associate a .lmv file
@@ -77,27 +86,30 @@ BIBLIO_REF = "2021MNRAS.500.3064S"
 # otherwise leave as None to use the value computed from the header.
 NEW_BEAM_SIZE = None
 
+# FEBE and Jy/K conversion factors
+FEBE = "HET230-XFFTS2"                      # Frontend/backend combination
+
 ##########################################
 # Dictionaries for Jy/K conversion factors
 ##########################################
-dicc_Gen = {
-    "HET230": [2016, 39, 6],
-    "PI230": [2016, 44, 6],
-    "HET345": [2016, 53, 8],
-    "NOVA660": [2016, 137, 22],
-    "GARD180": [2016, 39, 6],
-    "PI230": [2017, 45, 7],
-    "HET230": [2017, 40, 6],
-    "HET345": [2017, 51, 8],
-    "NOVA660": [2017, 110, 18],
-    "GARD180": [2017, 40, 6],
-    "HET460": [2017, 72, 11],
-    "PI230": [2018, 46, 4],
-    "SEPIA660": [2018, 63, 5],
-    "GARD180": [2018, 40, 6],
-    "SEPIA180": [2019, 35, 3],
-    "SEPIA660": [2019, 68, 6],
-}
+# dicc_Gen = {
+#     "HET230": [2016, 39, 6],
+#     "PI230": [2016, 44, 6],
+#     "HET345": [2016, 53, 8],
+#     "NOVA660": [2016, 137, 22],
+#     "GARD180": [2016, 39, 6],
+#     "PI230": [2017, 45, 7],
+#     "HET230": [2017, 40, 6],
+#     "HET345": [2017, 51, 8],
+#     "NOVA660": [2017, 110, 18],
+#     "GARD180": [2017, 40, 6],
+#     "HET460": [2017, 72, 11],
+#     "PI230": [2018, 46, 4],
+#     "SEPIA660": [2018, 63, 5],
+#     "GARD180": [2018, 40, 6],
+#     "SEPIA180": [2019, 35, 3],
+#     "SEPIA660": [2019, 68, 6],
+# }
 
 dicc = {
     "HET230": [2016, 40, 6],
@@ -119,55 +131,63 @@ def tapQuery_Het(source):
     """
     Query the ESO TAP service.
     """
-    from pyvo.dal import tap
-    from astropy.coordinates import SkyCoord
-    from astropy.units import Quantity
-    from tabulate import tabulate
 
     ESO_TAP_OBS = "http://archive.eso.org/tap_obs"
     tapobs = tap.TAPService(ESO_TAP_OBS)
 
     long = np.int32(source.split('G')[1])
-    source_left = f'G{long-1}'
-    source_right = f'G{long+1}'
+    long_left = long - 1
+    long_right = long + 1
 
-    long = int(source.split('G')[1])  # Convert to an integer
-    source_left = f'G{long-1:03d}'    # Format as 3-digit number with leading zeros
-    source_right = f'G{long+1:03d}'   # Format as 3-digit number with leading zeros
-    source_ = f'G{long:03d}'          # Format as 3-digit number with leading zeros
+    if long == 0:
+        # Assuming long_left was computed as -1, adjust it to wrap around
+        long_left = 360 + long_left  # For example, -1 becomes 359
+        # long_right is assumed to be 1
 
+        print(long_left, long_right)
+        query = (
+            "SELECT dp_id, exposure, prog_id, object, dp_tech, instrument, ra, dec, gal_lon, gal_lat \n"
+            "FROM dbo.raw \n"
+            "WHERE dp_id LIKE 'APEXHET.%' \n"
+            "AND (prog_id LIKE '092.F-9315%' OR prog_id LIKE '193.C-0584%') \n"
+            "AND (object LIKE 'G%') \n"
+            "AND ((gal_lon >= {ll} AND gal_lon <= 360) OR (gal_lon >= 0 AND gal_lon <= {lr})) \n"
+            "AND dp_cat = 'SCIENCE'"
+        ).format(ll=long_left, lr=long_right)
 
-    print('+------------------------------------------------------------+')
-    print(source, source_left, source_right)
-    print('+------------------------------------------------------------+')
+    else: 
+        query = (\
+            "SELECT dp_id, exposure, prog_id, object, dp_tech, instrument, ra, dec, gal_lon, gal_lat \n"
+            "FROM dbo.raw \n"
+            "WHERE dp_id LIKE 'APEXHET.%' \n"
+            "AND (prog_id LIKE '092.F-9315%' OR prog_id LIKE '193.C-0584%') \n"
+            # f"AND (object LIKE '{source_}%' OR object LIKE '{source_left}%' OR object LIKE '{source_right}%') \n"
+            f"AND (object LIKE 'G%') \n"
+            f"AND (gal_lon >= {long_left} AND gal_lon <= {long_right}) \n"
+            "AND dp_cat = 'SCIENCE'"
+        )
 
-    print("\nQuerying the ESO TAP service at %s" % ESO_TAP_OBS)
-    query = (
-        "SELECT dp_id, exposure, prog_id, object, dp_tech, instrument, ra, dec \n"
-        "FROM dbo.raw \n"
-        "WHERE dp_id LIKE 'APEXHET.%' \n"
-        "AND (prog_id LIKE '092.F-9315%' OR prog_id LIKE '193.C-0584%') \n"
-        f"AND (object LIKE '{source_}%' OR object LIKE '{source_left}%' OR object LIKE '{source_right}%') \n"
-        "AND dp_cat = 'SCIENCE'"
-    )
+    print('##################')
     print("\nQuery:\n" + query)
+    print('##################')
+    
     res = tapobs.search(query=query, maxrec=1000)
+    
     print("\n", res.to_table(), "\n")
     print("\nA total of " + str(len(res.to_table())) + " records were found matching the provided criteria.")
+    
     table = res.to_table()
     filename = f"{source}.tap"
     print("\nResults has been written to: " + filename)
-    with open(filename, "w") as f:
-        print(tabulate(table), file=f)
-    return table
+    table.write(filename, format="ascii.fixed_width", overwrite=True)
 
-
+# TO DO - Pull this from TAP but need ISTs for this... 
 def get_frontBack():
     """
     Get instrument-backend information (currently hardcoded).
     """
     # In this version, FEBE is set via the TAP query section below.
-    return "SUPERCAM-SCBE"
+    return "HET230-XFFTS2"
 
 
 def freqArray(prihdr, specNr):
@@ -259,9 +279,6 @@ def main():
     # --- Open error (rms) cube ---
     rmsIn = RMS_IN
     print("\nUsing error cube FITS file: " + rmsIn)
-    if rmsIn not in listOfFiles:
-        print(RED + f"file '{rmsIn}' containing error cube does not exist. Please provide a valid file." + ENDCOLOR)
-        sys.exit()
 
     fits.info(rmsIn)
     rmsfile = fits.open(rmsIn)
@@ -348,27 +365,23 @@ def main():
 
     # Read the TAP file
     fileq = f"{source}.tap"
-    with open(fileq, "r") as queryfile:
-        qfile = [line.split() for line in queryfile][1:-1]
+    # with open(fileq, "r") as queryfile:
+    #     qfile = [line.split() for line in queryfile][1:-1]
+    table_tap = Table.read(fileq, format="ascii.fixed_width")
     print(BLUE + "After pause, your TAP file length is:" + ENDCOLOR)
-    print("Length = " + str(len(qfile)) + " rows\n")
-    fileList = []
-    extCont = []
-    proList = []
-    sourceList_tmp = []
-    dprtech_tmp = []
-    instrum = []
-    posra = []
-    posdec = []
-    for row in qfile:
-        fileList.append(row[0])
-        extCont.append(float(row[1]))
-        proList.append(row[2])
-        sourceList_tmp.append(row[3])
-        dprtech_tmp.append(row[4])
-        instrum.append(row[5])
-        posra.append(row[6])
-        posdec.append(row[7])
+    print("Length = " + str(len(table_tap)) + " rows\n")
+
+    fileList = table_tap['dp_id']
+    extCont = table_tap['exposure']
+    proList = table_tap['prog_id']
+    sourceList_tmp = table_tap['object']
+    dprtech_tmp = table_tap['dp_tech']
+    instrum = table_tap['instrument']
+    posra = table_tap['ra']
+    posdec = table_tap['dec']
+    poslon = table_tap['gal_lon']
+    poslat = table_tap['gal_lat']
+
     fileList.sort()
     dprtech = list(set(dprtech_tmp))
     obs_tech = dprtech[0]
@@ -402,7 +415,7 @@ def main():
         print(tmp_t, fileTime)
 
     # --- FEBE and Jy/K conversion factor ---
-    febe = "SUPERCAM-SCBE"  # Hardcoded in this pipeline
+    febe = FEBE
     ind = febe.index("-")
     front = febe[:ind]
     fac_yr = dicc[front][0]
@@ -577,7 +590,7 @@ def main():
     if prog_code == "MULTI":
         prihdr.set("PROG_ID", prog_code, after="TEXPTIME")
         for i, p in enumerate(proList, start=1):
-            prihdr.set("PROGID" + str(i), p, "ESO programme identification", before="OBID1")
+            prihdr.set("PROGID" + str(i), p, "ESO programme identification", before="PROG_ID")
     else:
         prihdr.set("PROG_ID", prog_code, "ESO programme identification", after="TEXPTIME")
     prihdr.set("SPEC_RES", specres, "Average spectral resolving power", after="PROG_ID")
