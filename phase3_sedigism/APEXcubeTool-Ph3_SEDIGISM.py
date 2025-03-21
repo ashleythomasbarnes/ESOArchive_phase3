@@ -30,8 +30,6 @@ import urllib.request # For URL handling
 import urllib.parse # For URL parsing
 from io import BytesIO # For byte handling
 
-from pyvo.dal import tap
-
 # Colors for printing messages
 RED = "\033[31m"       # For errors
 GREEN = "\033[32;3m"   # For outputs
@@ -132,9 +130,9 @@ def tapQuery_Het(source):
     Query the ESO TAP service.
     """
 
-    ESO_TAP_OBS = "http://archive.eso.org/tap_obs"
-    tapobs = tap.TAPService(ESO_TAP_OBS)
-
+    ESO_TAP_OBS = "https://archive.eso.org/tap_obs"
+    sync_url = ESO_TAP_OBS + "/sync"
+    
     long = np.int32(source.split('G')[1])
     long_left = long - 1
     long_right = long + 1
@@ -143,8 +141,6 @@ def tapQuery_Het(source):
         # Assuming long_left was computed as -1, adjust it to wrap around
         long_left = 360 + long_left  # For example, -1 becomes 359
         # long_right is assumed to be 1
-
-        print(long_left, long_right)
         query = (
             "SELECT dp_id, exposure, prog_id, object, dp_tech, instrument, ra, dec, gal_lon, gal_lat \n"
             "FROM dbo.raw \n"
@@ -171,12 +167,27 @@ def tapQuery_Het(source):
     print("\nQuery:\n" + query)
     print('##################')
     
-    res = tapobs.search(query=query, maxrec=1000)
+    # Set up the query parameters as specified by the TAP protocol
+    params = {
+        "REQUEST": "doQuery",
+        "LANG": "ADQL",
+        "QUERY": query
+}
+    data = urllib.parse.urlencode(params).encode("utf-8")
+
+    # Make the HTTP POST request using urllib.request.urlopen
+    with urllib.request.urlopen(sync_url, data=data) as response:
+        # Read the response
+        result = response.read()
+
+    # The response is in VOTable format.
+    votable = parse_single_table(BytesIO(result))
+    table = votable.to_table()
+
+    print("\n", table, "\n")
+    print("\nA total of " + str(len(table)) + " records were found matching the provided criteria.")
     
-    print("\n", res.to_table(), "\n")
-    print("\nA total of " + str(len(res.to_table())) + " records were found matching the provided criteria.")
-    
-    table = res.to_table()
+    # table = result.to_table()
     filename = f"{source}.tap"
     print("\nResults has been written to: " + filename)
     table.write(filename, format="ascii.fixed_width", overwrite=True)
