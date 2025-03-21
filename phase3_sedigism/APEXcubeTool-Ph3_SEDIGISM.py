@@ -29,6 +29,7 @@ from astropy.io.votable import parse_single_table # For VOTable parsing
 import urllib.request # For URL handling
 import urllib.parse # For URL parsing
 from io import BytesIO # For byte handling
+from glob import glob # For file handling
 
 # Colors for printing messages
 RED = "\033[31m"       # For errors
@@ -41,13 +42,19 @@ ENDCOLOR = "\033[0m"
 ##########################################
 # CONFIGURATION: Set input parameters here.
 ##########################################
-# Set the names of the input FITS files (must be present in the current directory)
-SPEC_IN = "./data/G000_13CO21_Tmb_DR1.fits"           # Science cube file
-RMS_IN =  "./data/G000_13CO21_Tmb_DR1_RMSCUBE.fits"            # Error (rms) cube file
+# INPUT_PATH = './data/'
+# OUTPUT_PATH = './data_output/'
 
-# Set the names of the output FITS files
-FILENAME_OUT = SPEC_IN.split('_Tmb_DR1.fits')[0]+'_P3.fits'
-FILENAME_WHITE_OUT = SPEC_IN.split('_Tmb_DR1.fits')[0]+'_P3_whitelight.fits'
+INPUT_PATH = '/diskb/phase3data/ftp/programs/SEDIGISM/batch_22605/'
+OUTPUT_PATH = '/diskb/phase3data/ftp/programs/SEDIGISM/batch_29448/'
+
+# # Set the names of the input FITS files (must be present in the current directory)
+# SPEC_IN = "./data/G000_13CO21_Tmb_DR1.fits"           # Science cube file
+# RMS_IN =  "./data/G000_13CO21_Tmb_DR1_RMSCUBE.fits"            # Error (rms) cube file
+
+# # Set the names of the output FITS files
+# FILENAME_OUT = SPEC_IN.split('_Tmb_DR1.fits')[0]+'_P3.fits'
+# FILENAME_WHITE_OUT = SPEC_IN.split('_Tmb_DR1.fits')[0]+'_P3_whitelight.fits'
 
 # LMV file association (if applicable)
 ASSOCIATE_LMV = False                       # Set True if you want to associate a .lmv file
@@ -164,7 +171,8 @@ def tapQuery_Het(source):
         )
 
     print('##################')
-    print("\nQuery:\n" + query)
+    print("Query:")
+    print("   %s" %query)
     print('##################')
     
     # Set up the query parameters as specified by the TAP protocol
@@ -184,7 +192,7 @@ def tapQuery_Het(source):
     votable = parse_single_table(BytesIO(result))
     table = votable.to_table()
 
-    print("\n", table, "\n")
+    # print("\n", table, "\n")
     print("\nA total of " + str(len(table)) + " records were found matching the provided criteria.")
     
     # table = result.to_table()
@@ -224,7 +232,8 @@ def freqArray(prihdr, specNr):
 ##########################################
 # Main script execution
 ##########################################
-def main():
+def main(specIn, rmsIn, outFluname, outWhitename):
+
     # --- Print header ---
     print("##########################################")
     print(MAGENTA + "#APEX-Phase 3 Tool" + ENDCOLOR)
@@ -248,9 +257,7 @@ def main():
     os.system("ls *.fits")
     print("")
 
-    listOfFiles = os.listdir(".")
     # Use configured science file
-    specIn = SPEC_IN
     print("Using science FITS file: " + specIn)
     fits.info(specIn)
     specfile = fits.open(specIn)
@@ -288,7 +295,6 @@ def main():
     specfile.close()
 
     # --- Open error (rms) cube ---
-    rmsIn = RMS_IN
     print("\nUsing error cube FITS file: " + rmsIn)
 
     fits.info(rmsIn)
@@ -379,8 +385,8 @@ def main():
     # with open(fileq, "r") as queryfile:
     #     qfile = [line.split() for line in queryfile][1:-1]
     table_tap = Table.read(fileq, format="ascii.fixed_width")
-    print(BLUE + "After pause, your TAP file length is:" + ENDCOLOR)
-    print("Length = " + str(len(table_tap)) + " rows\n")
+    # print(BLUE + "After pause, your TAP file length is:" + ENDCOLOR)
+    # print("Length = " + str(len(table_tap)) + " rows\n")
 
     fileList = table_tap['dp_id']
     extCont = table_tap['exposure']
@@ -401,8 +407,8 @@ def main():
     NrFilesBol = len(fileList)
     if NrFilesBol >= 1:
         print("\n" + GREEN + "Total <APEXHET.*.fits> files >> " + ENDCOLOR, NrFilesBol)
-        print(*fileList, sep="\t")
-        print("")
+        # print(*fileList, sep="\t")
+        # print("")
     else:
         print(RED + "No APEXHET files found in the current directory." + ENDCOLOR)
         sys.exit()
@@ -423,7 +429,7 @@ def main():
     for tmp_t in fileList:
         fileTime = tmp_t[8:18] + " " + tmp_t[19:31]
         listTime.append(fileTime)
-        print(tmp_t, fileTime)
+        # print(tmp_t, fileTime)
 
     # --- FEBE and Jy/K conversion factor ---
     febe = FEBE
@@ -789,10 +795,10 @@ def main():
     # --- Virtual output file names and header associations ---
     # outFluname = source + "_3DcubePh3.fits"
     # outWhitename = source + "_3DcubePh3_whitelight.fits"
-    outFluname = FILENAME_OUT
-    outWhitename = FILENAME_WHITE_OUT
+    # outFluname = FILENAME_OUT
+    # outWhitename = FILENAME_WHITE_OUT
 
-    prihdr.set("ASSON1", outWhitename)
+    prihdr.set("ASSON1", outWhitename.split('/')[-1])
     if attlmv == "y":
         outLMVname = source + "_3Dcube_GILDASformat.lmv"
         prihdr.set("ASSON2", outLMVname)
@@ -823,5 +829,25 @@ def main():
         os.system("cp -i " + lmvIn + " " + outLMVname)
         print(outLMVname + " created (copy of original GILDAS .lmv format cube)")
 
-if __name__ == "__main__":
-    main()
+### RUN FOR ALL FILES IN DIRECTORY ###
+
+inputfiles_data = glob("%s/*_Tmb_DR1.fits" % INPUT_PATH)
+
+for i, inputfile_data in enumerate(inputfiles_data):
+
+    inputfile_err = inputfile_data.replace(".fits", "_RMSCUBE.fits")
+    output_file = inputfile_data.replace("_Tmb_DR1.fits", "_P3.fits").replace(INPUT_PATH, OUTPUT_PATH)
+    output_white_file = inputfile_data.replace("_Tmb_DR1.fits", "_P3_whitelight.fits").replace(INPUT_PATH, OUTPUT_PATH)
+
+    if inputfile_data == output_file or inputfile_err == output_file or inputfile_data == output_white_file or inputfile_err == output_white_file:
+        print(RED + "Error: input and output files are the same." + ENDCOLOR)
+        sys.exit()
+
+    print('INITIALIZING PROCESS FOR FILE')
+    print("   Input file: ", inputfile_data)
+    print("   Error file: ", inputfile_err)
+    print("   Output file: ", output_file)
+    print("   Output white file: ", output_white_file)
+    print("\n")
+
+    main(inputfile_data, inputfile_err, output_file, output_white_file)
