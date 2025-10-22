@@ -1,0 +1,127 @@
+#full data_prod names
+#dataprod_types=("image" "image_mef" "mef_image" "image_fluxmap" "spectrum" "cube_ifs" "visibility" "srctbl" "m_catalog" "catalog_tile" "catalog")
+#short data_prod names
+dataprod_types=("image" "imef" "mefi" "iflux" "spec" "cube" "visi" "srctbl" "mcat" "ctile" "catal")
+
+#keyword list
+kwlist=(PRODCATG ASSOC ASSON ASSOM ORIGIN TELESC INSTR FILTER OBJECT RA DEC EQUINOX RADESYS TIMESYS EXPTIME TEXPTIME MJD-OBS MJD-END PROG OBID NCOMBINE OBSTECH FLUXCAL PROCSOFT REFERENC PROV BUNIT GAIN DETRON EFFRON WEIGHT CRVAL CRPIX CTYPE CUNIT CD CSYER CRDER PHOTZP PHOTZPER PHOTSYS SPECSYS EXT_OBJ CONTNORM TOT_FLUX FLUXERR WAVELMIN WAVELMAX LAMRMS LAMNLIN SPEC_BIN SPEC_ERR SPEC_SYE RA_ERR DEC_ERR NELEM VOCLASS VOPUB TITLE APERTURE TELAPSE TMID SPEC_VAL SPEC_BW BNOISE MAPMODE FEBE CONTENT INSMODE BASE_MIN BASE_MAX NUM_CHAN VIS2ERR T3PHIERR STOKES HDUCLASS HDUCLAS HDUDOC HDUVERS SCIDATA ERRDATA QUALDATA CONFDATA BKGDATA BKGERR BKGCONF ABMAGLIM PIXNOISE MAGLIM ABMAGSAT PSF_FWHM ELLIPTIC SNR SPEC_RES SKY_RES SKY_RERR STREHL ARCFILE CHECKSUM DATASUM ORIGFILE P3ORIG NDIT NJITTER NOFFSETS NUSTEP FPRA FPDE SKYSQDEG M_EPOCH APMATCHD TXLNK TXRGF TXCTY NOESODAT TFIELDS TTYPE TFORM TCOMM TUNIT TUTYP TUCD TDMIN TDMAX TNULL EXTNAME TZERO TSCAL EXTVER EXTLEVEL)
+
+# define the flags keywords for each data_prod
+image     kwflag=(11 13 13 13 11 11 11 11 11 11 11 13 11 13 11 11 11 11 12 12 12 11 11 11 11 12 11 16 16 16 16 11 11 11 11 11 14 14 11 14 11 17 17 17 17 17 17 17 17 17 17 17 17 15 15 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 10 17 17 17 17 17 17 17 17 17 17 17 11 17 17 11 11 11 17 17 17 17 13 19 31 31 19 19 13 13 13 13 17 17 17 17 17 17 17 17 13 17 17 17 17 17 17 17 17 17 17 23 18 18 18 18)
+imef      kwflag=(11 13 13 13 11 11 11 11 11 11 11 13 11 13 11 11 11 11 12 12 12 11 11 11 11 12 21 16 16 16 16 21 21 21 21 21 24 24 21 24 21 17 17 17 17 17 17 17 17 17 17 17 17 15 15 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 10 21 21 21 21 23 23 23 23 23 23 23 21 17 17 21 21 21 17 17 17 17 13 19 31 31 19 19 13 13 13 13 17 17 17 17 17 17 17 17 13 17 17 17 17 17 17 17 17 17 17 23 18 18 18 18)
+mefi      kwflag=(11 13 13 13 11 11 11 11 11 11 11 13 11 13 11 11 11 11 12 12 12 11 11 11 11 12 21 16 16 16 16 21 21 21 21 21 24 24 21 24 21 17 17 17 17 17 17 17 17 17 17 17 17 15 15 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 10 17 17 17 17 17 17 17 17 17 17 17 21 17 17 21 21 21 17 17 17 17 13 19 31 31 19 19 13 13 13 13 17 17 17 17 17 17 17 17 13 17 17 17 17 17 17 17 17 17 17 23 18 18 18 18)
+iflux     kwflag=(11 13 13 13 11 11 11 11 11 11 11 13 11 13 11 11 11 11 12 12 12 11 11 11 11 12 11 17 17 17 17 11 11 11 11 11 14 14 17 17 17 17 17 17 17 11 11 11 17 17 17 17 17 15 15 17 17 17 17 17 17 17 17 17 11 11 11 17 17 17 17 17 17 17 10 17 17 17 17 17 17 17 17 17 17 17 15 17 17 11 11 11 17 17 11 13 17 19 31 31 19 19 17 17 17 17 17 17 17 17 17 17 17 17 13 17 17 17 17 17 17 17 17 17 17 23 18 18 18 18)
+spec      kwflag=(11 13 13 13 11 11 11 17 31 31 31 13 11 13 11 11 11 11 12 12 12 11 11 11 11 12 15 17 17 17 17 17 17 17 17 15 17 17 17 17 17 11 13 11 11 11 11 11 16 16 11 14 14 14 14 21 21 21 21 21 21 21 21 21 17 17 17 17 17 17 17 17 17 17 10 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 11 11 17 17 13 19 31 31 19 19 17 17 17 17 17 17 17 17 17 17 17 17 13 21 21 21 26 21 21 21 23 23 17 23 18 18 18 18)
+cube      kwflag=(11 13 13 13 11 11 11 17 11 11 11 13 11 13 11 11 11 11 12 12 12 11 11 11 11 12 21 17 17 17 17 21 21 21 21 21 24 24 27 17 17 11 17 17 17 17 11 11 17 17 15 17 17 15 15 27 27 27 27 27 27 27 27 27 17 17 17 17 17 17 17 17 17 17 10 21 21 21 21 23 23 23 17 17 17 17 11 11 17 17 17 16 17 11 11 13 13 19 31 31 19 19 17 17 17 17 17 17 17 17 17 17 17 17 13 27 27 27 27 27 27 27 27 27 17 27 18 18 18 18)
+visi      kwflag=(11 13 13 13 11 11 11 17 11 11 11 13 11 13 11 11 11 11 12 12 12 11 17 11 11 12 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 11 17 17 17 17 11 11 17 17 17 11 11 17 17 17 17 17 17 17 17 17 17 17 17 17 17 11 11 11 11 11 11 11 10 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 11 17 17 17 19 31 31 19 19 17 17 17 17 17 17 17 17 17 17 17 17 13 21 21 21 26 23 17 26 26 26 26 23 18 18 18 18)
+srctbl    kwflag=(11 13 13 13 11 11 11 11 11 11 11 13 11 13 11 11 11 11 12 12 12 11 17 11 11 12 17 17 17 17 17 17 17 17 17 17 17 17 23 24 21 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 10 17 17 17 17 17 17 17 17 17 17 17 21 17 17 21 21 21 17 17 17 17 13 19 31 31 19 19 17 17 17 17 17 17 17 17 17 17 17 17 13 21 21 21 26 23 17 26 26 26 26 23 18 18 18 18)
+mcat      kwflag=(11 17 17 17 11 11 11 13 11 17 17 17 17 13 17 17 11 11 12 12 17 13 17 11 11 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 11 17 17 17 17 17 11 11 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 10 17 17 17 17 17 17 17 17 17 17 17 13 17 13 17 17 17 17 17 17 17 17 19 31 31 19 19 17 17 17 17 13 13 11 13 13 13 13 13 13 21 21 21 21 21 17 21 26 26 23 23 15 15 15 15)
+ctile     kwglag=(11 13 13 13 11 11 11 13 11 11 11 13 11 13 17 17 11 11 12 12 17 13 17 11 11 12 17 17 17 17 17 17 17 17 17 17 17 17 17 17 11 17 17 17 17 17 11 11 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 10 17 17 17 17 17 17 17 17 17 17 17 13 17 13 17 17 17 17 17 17 17 17 19 31 31 19 19 17 17 17 17 11 11 11 13 13 13 17 17 13 21 21 21 21 21 17 21 26 26 23 23 15 15 15 15)
+catal     kwflag=(11 13 13 13 11 11 11 13 11 13 13 13 13 13 17 17 11 11 12 12 17 13 17 11 11 12 17 17 17 17 17 17 17 17 17 17 17 17 17 17 11 17 17 17 17 17 11 11 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 13 13 13 17 17 17 17 17 17 17 10 17 17 17 17 17 17 17 17 17 17 17 13 17 13 17 17 17 17 17 13 13 17 19 31 31 19 19 17 17 17 17 13 13 13 13 13 13 13 13 13 21 21 21 21 21 17 21 26 26 23 23 15 15 15 15)
+
+
+#description of the first bit of kwflag [range:1-3]
+#1 = apply only in the primary header
+#2 = apply only in the extension header
+#3 = apply both in primary and extension headers
+
+#description of the second bit of kwflag [range:0-9]
+#1 = MM = MANDATORY
+#2 = ME = MANDATORY ESO
+#3 = MA = MANDATORY WHEN APPLICABLE
+#4 = RC = RECOMMENDED
+#5 = NO = NOT ALLOWED
+#6 = OP = OPTIONAL
+#7 = na = NOT APPLICABLE
+#8 = un = UNDEFINED IN SDPS
+#9 = RE = RESERVED
+#0 = SU = ASK SUPPORT
+
+#datatype for each data_prod
+kwtype=(S S S S S S S S S F F F S S F F F F S I I S S S S S S F F F F F F S S F F F F F F S L L L F F F F F F F F F F I S S S F F F F F F S S S S F F I F F S S S S S S S S S S S S F F F F F F F F F F F S S S S S I I I I F F F L L S S S L I S S S S S S F F I S U U U U)
+# S = string
+# F = float
+# I = integer
+# L = logical
+# U = undefined
+
+
+
+
+
+#TABLE NOTES
+#The first line indicates the index position of each note (i.e. to which keyword it applies),
+#the second line indicates the number of the notes
+#image 
+# 2  3  4 11 13 24 91 96 102 103 104 105 114 125 
+#31 32 31 37 38 40 49 51  52  52  52  52  59  65
+#imagemef
+# 2  3  4 11 13 24 79 80 81 82 83 84 85 91 96 102 103 104 105 114 125 
+#31 32 31 37 38 40 46 46 46 46 46 46 46 49 51  52  52  52  52  59  65
+#mefimage == image
+# 2  3  4 11 13 24 91 96 102 103 104 105 114 125 
+#31 32 31 37 38 40 49 51  52  52  52  52  59  65
+#fluxmap 
+# 2  3  4 11 13 24 95 114 125 
+#31 33 31 37 38 40 50  59  65
+#spectra
+# 2  3  4 11 13 24 42 45 96 114 119 120 122 123 125
+#31 32 31 37 38 40 42 43 51  59  61  62  63  63  65
+#cube
+# 2  3  4 11 13 24 79 80 81 95 96 114 125
+#31 34 31 37 38 40 46 46 46 50 51  59  65
+#visibility
+# 2  3  4 11 13 24 114 119 125 
+#31 33 31 37 38 40  59  60  65
+#srctbl
+#2 3 4 11 13 21 24 38 91 96 114 119 125
+#31 32 31 37 38 39 40 49 51  59  60  65
+#mcatalog
+# 8 13 21 24 46 47 86 88 106 107 109 110 111 112 113 114 119 124 125
+#35 38 39 40 44 44 47 48  53  53  55  56  57  57  57  59  61  64  65
+#catalogtile
+# 2  3  4  8 13 21 24 46 47 86 88 109 110   111 114 119 124 125
+#31 32 31 35 38 39 40 44 44 47 48  55  56 57+58  59  61  64  65
+#catalog
+# 2  3  4  8 10  11   12 13 21 24 46 47 64 65 66 86 88 94 95 106 107 108 109 110 111   112 113 114 119 124 125
+#31 32 31 35 36 36+37 36 38 39 40 44 44 45 45 45 47 48 45 50  54  54  54  55  56 57+58  57  57  59  61  64  65
+
+
+
+# NOTES
+
+31 Mandatory for the cases where ancillary files are provided in a non-FITS format.
+32 Mandatory for the cases where ancillary files are provided in association with the scientific data.
+33 The flux map must always be associated with the RMS noise map, or the SNR map, or both.
+34 The IFS 3D cube must always be associated with the white-light image. The white-light imagemust be delivered using the ASSONi/ASSOCi mechanism.
+35 Applicable to photometric catalogues as well as APEX catalogues.
+36 There can be cases where that keyword does not apply, for instance in the case of target catalogues of spectroscopic surveys, e.g. PESSTO where no appropriate RA/DEC value can be defined to characterise the catalogue as a whole.
+37 If RADESYS='FK5', EQUINOX=2000.0 is mandatory. If RADESYS = 'ICRS', EQUINOX is tolerated and its value needs to be 2000.0.
+38 Must be present if the system used is other than UTC.
+39 Does not apply to catalogues for which no unique value of OBSTECH can be identified.
+40 If a refereed publication is not available at the time of the data release going public, the value can be left to an empty string.
+41 Mandatory depending on whether fluxes or magnitudes are provided in the source list.
+42 EXT_OBJ is mandatory for externally submitted data products (e.g. spectroscopic public surveys). EXT_OBJ is not applicable to data processed in an unsupervised way, for which the keyword value cannot be assessed and thus the property is not known.
+43 FLUXERR applies to SCIENCE.SPECTRUM with FLUXCAL='ABSOLUTE'. In case of SCIENCE.SPECTRUM with FLUXCAL = 'UNCALIBRATED', the FLUXERR keyword shall be set to -1. The special value -2 is reserved for the case when the flux error cannot be determined.
+44 Applicable to spectroscopic and APEX catalogues. For photometric catalogues, the value is calculated by the Phase 3 system unless the combination (INSTRi, FILTERi) is not unique, in which case please contact Phase 3 operations support staff at https://support.eso.org/ to assess the correct values of the WAVELMIN/MAX keywords, to be added in the headers.
+45 For APEX catalogues only.
+46 SCIDATA is mandatory for the cases where ancillary extensions are provided in association with the scientific data. ERRDATA / QUALDATA / CONFDATA / BKGDATA / BKGERR / BKGCONF shall be used if the corresponding extension is provided.
+47 For photometric catalogues. And if there is more than one filter, it is not applicable. Use MAGLIMi instead.
+48 For photometric catalogues with more than one filter.
+49 For VIRCAM and OmegaCAM only.
+50 Applicable to the case when SKY_RES is expected to vary within the data collection due to the way it is estimated (see footnote 18).
+51 For AO observations only.
+52 NIR image data products qualify for the keyword if, and only if, all exposures and observations contributing to the given product share the same value for the respective parameter. If, for example, the product has been created from exposures taken with different detector integration time, the keyword DIT should not be defined in the FITS header.
+53 Not mandatory in case of complex footprints.
+54 Does not apply to spectroscopic catalogues for which no coverage pattern exists.
+55 Applicable to multi-epoch catalogues formatted according to section 12.5.1 only.
+56 For aperture-matched catalogues only.
+57 In case data link is used (see section 12.3).
+58 In case provenance per catalogue record is used (see section 5.2.3).
+59 Applicable to products originating or containing data from a non-ESO facility.
+60 Keyword may be absent for columns representing quantities having no units of measurement, otherwise it must be present.
+61 For quantities having no units of measurement, the value shall be set to an empty string.
+62 In case the UType is not defined in the IVOA document [9] like e.g. for CONTINUUM, the corresponding TUTYPi keyword shall be set to an empty string.
+63 Mandatory for the TTYPE1 array only (start/stop spectral coordinates).
+64 See section 5.18 and section 12.2.6 for applicability.
+65 A specific value is requested in particular cases: 'PHASE3PROVENANCE', 'PHASE3CATALOG', 'PHASE3FILELIST'.

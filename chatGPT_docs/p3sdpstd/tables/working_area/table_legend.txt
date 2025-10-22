@@ -1,0 +1,53 @@
+# LEGEND
+# The following symbols are used in the table:
+
+MM = MANDATORY
+ME = MANDATORY ESO
+MA = MANDATORY WHEN APPLICABLE
+RC = RECOMMENDED
+NO = NOT ALLOWED
+OP = OPTIONAL
+NA = NOT APPLICABLE
+un = UNDEFINED IN SDPS
+RE = RESERVED
+SU = ASK SUPPORT
+
+
+# NOTES FOR CASE WHERE MA IS USED
+# e.g. MA31 would be Mandatory for the cases where ancillary files are provided in a non-FITS format.
+
+31 = Mandatory for the cases where ancillary files are provided in a non-FITS format.
+32 = Mandatory for the cases where ancillary files are provided in association with the scientific data.
+33 = The flux map must always be associated with the RMS noise map, or the SNR map, or both.
+34 = The IFS 3D cube must always be associated with the white-light image. The white-light imagemust be delivered using the ASSONi/ASSOCi mechanism.
+35 = Applicable to photometric catalogues as well as APEX catalogues.
+36 = There can be cases where that keyword does not apply, for instance in the case of target catalogues of spectroscopic surveys, e.g. PESSTO where no appropriate RA/DEC value can be defined to characterise the catalogue as a whole.
+37 = If RADESYS='FK5', EQUINOX=2000.0 is mandatory. If RADESYS = 'ICRS', EQUINOX is tolerated and its value needs to be 2000.0.
+38 = Must be present if the system used is other than UTC.
+39 = Does not apply to catalogues for which no unique value of OBSTECH can be identified.
+40 = If a refereed publication is not available at the time of the data release going public, the value can be left to an empty string.
+41 = Mandatory depending on whether fluxes or magnitudes are provided in the source list.
+42 = EXT_OBJ is mandatory for externally submitted data products (e.g. spectroscopic public surveys). EXT_OBJ is not applicable to data processed in an unsupervised way, for which the keyword value cannot be assessed and thus the property is not known.
+43 = FLUXERR applies to SCIENCE.SPECTRUM with FLUXCAL='ABSOLUTE'. In case of SCIENCE.SPECTRUM with FLUXCAL = 'UNCALIBRATED', the FLUXERR keyword shall be set to -1. The special value -2 is reserved for the case when the flux error cannot be determined.
+44 = Applicable to spectroscopic and APEX catalogues. For photometric catalogues, the value is calculated by the Phase 3 system unless the combination (INSTRi, FILTERi) is not unique, in which case please contact Phase 3 operations support staff at https://support.eso.org/ to assess the correct values of the WAVELMIN/MAX keywords, to be added in the headers.
+45 = For APEX catalogues only.
+46 = SCIDATA is mandatory for the cases where ancillary extensions are provided in association with the scientific data. ERRDATA / QUALDATA / CONFDATA / BKGDATA / BKGERR / BKGCONF shall be used if the corresponding extension is provided.
+47 = For photometric catalogues. And if there is more than one filter, it is not applicable. Use MAGLIMi instead.
+48 = For photometric catalogues with more than one filter.
+49 = For VIRCAM and OmegaCAM only.
+50 = Applicable to the case when SKY_RES is expected to vary within the data collection due to the way it is estimated (see footnote 18).
+51 = For AO observations only.
+52 = NIR image data products qualify for the keyword if, and only if, all exposures and observations contributing to the given product share the same value for the respective parameter. If, for example, the product has been created from exposures taken with different detector integration time, the keyword DIT should not be defined in the FITS header.
+53 = Not mandatory in case of complex footprints.
+54 = Does not apply to spectroscopic catalogues for which no coverage pattern exists.
+55 = Applicable to multi-epoch catalogues formatted according to section 12.5.1 only.
+56 = For aperture-matched catalogues only.
+57 = In case data link is used (see section 12.3).
+58 = In case provenance per catalogue record is used (see section 5.2.3).
+59 = Applicable to products originating or containing data from a non-ESO facility.
+60 = Keyword may be absent for columns representing quantities having no units of measurement, otherwise it must be present.
+61 = For quantities having no units of measurement, the value shall be set to an empty string.
+62 = In case the UType is not defined in the IVOA document [9] like e.g. for CONTINUUM, the corresponding TUTYPi keyword shall be set to an empty string.
+63 = Mandatory for the TTYPE1 array only (start/stop spectral coordinates).
+64 = See section 5.18 and section 12.2.6 for applicability.
+65 = A specific value is requested in particular cases: 'PHASE3PROVENANCE', 'PHASE3CATALOG', 'PHASE3FILELIST'.

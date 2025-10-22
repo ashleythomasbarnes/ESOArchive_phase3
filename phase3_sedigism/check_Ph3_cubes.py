@@ -1,37 +1,15 @@
-#!/usr/bin/env python
-"""
-APEX Phase 3 Tool: Creation of FITS spectral cubes compliant with ESO Phase 3 requirements.
-Contact: pvenegas@eso.org, tstanke@mpe.mpg.de
-Creation: 2020-07-13; Updated: 2021-08-13
-"""
-
-##########################################
-# TO DO 
-# - Pull this from TAP but need ISTs for this... (currently hardcoded)
-##########################################
+####
+# Script to check the data cubes from the Phase 3 data.
+# This script will create a 3x3 grid of images for each data cube, showing the sum of the data, the maximum of the data, and the sum of the error.
+# The images will be saved in the same directory as the input data cube, with the same name but with a .png extension.
+###
 
 # Imports
-import os # For file handling 
 import sys # For system handling
-import math # For mathematical operations
-import copy # For copying objects
-import hashlib # For hashing
-
 import numpy as np # For numerical operations
 from astropy.io import fits # For FITS file handling
-from astropy.time import Time # For time handling
-from astropy import units as u # For units
-from astropy.table import Table # For table handling
-# from astropy.wcs import WCS # For World Coordinate System
-from astropy.coordinates import SkyCoord # For sky coordinates
-from astropy.io.votable import parse_single_table # For VOTable parsing
-
-import urllib.request # For URL handling
-import urllib.parse # For URL parsing
-from io import BytesIO # For byte handling
 from glob import glob # For file handling
-
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt # For plotting
 
 # Colors for printing messages
 RED = "\033[31m"       # For errors
@@ -43,97 +21,89 @@ ENDCOLOR = "\033[0m"
 
 ### RUN FOR ALL FILES IN DIRECTORY ###
 
-INPUT_PATH = './data_output/'
-OUTPUT_PATH = './check_figs/'
+# INPUT
+# INPUT_PATH = './data_output/'
+INPUT_PATH = '/diskb/phase3data/ftp/programs/SEDIGISM/batch_29448/'
+
+# OUTPUT 
+OUTPUT_PATH = './checks/'
 
 inputfiles_data = glob("%s/*_P3.fits" % INPUT_PATH)
-
-# for i, inputfile_data in enumerate(inputfiles_data):
-
-    # output_file = inputfile_data.replace(".fits", ".png").replace(INPUT_PATH, OUTPUT_PATH)
-    # # output_file_data = inputfile_data.replace(".fits", "_data.png").replace(INPUT_PATH, OUTPUT_PATH)
-    # # output_file_err = inputfile_data.replace(".fits", "_err.png").replace(INPUT_PATH, OUTPUT_PATH)
-
-    # if inputfile_data == output_file:
-    #     print(RED + "Error: input and output files are the same." + ENDCOLOR)
-    #     sys.exit()
-
-    # hdu_list = fits.open(inputfile_data)
-    # hdu_data = hdu_list['DATA_EXT']
-    # hdu_err = hdu_list['STAT_EXT']
-
-    # sum_data = np.sum(hdu_data.data, axis=0)
-    # max_data = np.max(hdu_data.data, axis=0)
-    # sum_err = hdu_err.data[0]
-
-    # fig = plt.figure(figsize=(10,10))
-    # ax1 = fig.add_subplot(131)
-    # ax2 = fig.add_subplot(132)
-    # ax3 = fig.add_subplot(133)
-
-    # ax1.imshow(sum_data, origin='lower')
-    # ax2.imshow(max_data, origin='lower')
-    # ax3.imshow(sum_err, origin='lower')
-
-    # for ax in [ax1,ax2,ax3]:
-    #     ax.set_yticklabels([])
-    #     ax.set_xticklabels([])
-    #     ax.grid(True, ls='--', color='w', alpha=0.3)
-
-    # fig.tight_layout()
-    # fig.savefig(output_file, bbox_inches='tight', dpi=300)
-
-    # print('INITIALIZING PROCESS FOR FILE')
-    # print("   Input file: ", inputfile_data)
-    # print("   Output file: ", output_file)
-    # print("\n")
 
 # Define your percentile ranges for each row; adjust these as needed.
 percentile_ranges = [(1, 99), (5, 95), (10, 90)]
 
+# for i, inputfile_data in enumerate(inputfiles_data):
+
+#     print('PROCESSING FILE %d OF %d' % (i+1, len(inputfiles_data)))
+
+#     output_file = inputfile_data.replace(".fits", ".png").replace(INPUT_PATH, OUTPUT_PATH)
+
+#     if inputfile_data == output_file:
+#         print(RED + "Error: input and output files are the same." + ENDCOLOR)
+#         sys.exit()
+
+#     hdu_list = fits.open(inputfile_data)
+#     hdu_data = hdu_list['DATA_EXT']
+#     hdu_err = hdu_list['STAT_EXT']
+
+#     # Compute the images as before
+#     sum_data = np.sum(hdu_data.data, axis=0)
+#     max_data = np.max(hdu_data.data, axis=0)
+#     sum_err = hdu_err.data[0]
+
+#     # Prepare a 3x3 grid of subplots.
+#     fig, axs = plt.subplots(3, 3, figsize=(15, 15))
+    
+#     # Organize the three images and corresponding titles.
+#     data_images = [sum_data, max_data, sum_err]
+#     titles = ["Sum Data", "Max Data", "Sum Error"]
+
+#     # Loop over each row (each percentile range) and column (each image)
+#     for row, (p_low, p_high) in enumerate(percentile_ranges):
+#         for col, (image, title) in enumerate(zip(data_images, titles)):
+#             ax = axs[row, col]
+#             # Compute the vmin and vmax based on the given percentile range
+#             vmin = np.nanpercentile(image, p_low)
+#             vmax = np.nanpercentile(image, p_high)
+#             ax.imshow(image, origin='lower', vmin=vmin, vmax=vmax)
+#             ax.set_title(f"{title}\n{p_low}-{p_high} Percentile")
+#             # Remove tick labels
+#             ax.set_xticklabels([])
+#             ax.set_yticklabels([])
+#             # Add a grid for visual reference
+#             ax.grid(True, ls='--', color='w', alpha=0.3)
+
+#     fig.tight_layout()
+#     fig.savefig(output_file, bbox_inches='tight', dpi=300)
+
+#     print("   Input file: ", inputfile_data)
+#     print("   Output file: ", output_file)
+#     print("\n")
+
 for i, inputfile_data in enumerate(inputfiles_data):
 
-    output_file = inputfile_data.replace(".fits", ".png").replace(INPUT_PATH, OUTPUT_PATH)
+    print('PROCESSING FILE %d OF %d' % (i+1, len(inputfiles_data)))
 
-    if inputfile_data == output_file:
+    output_file_sum = inputfile_data.replace(".fits", "_sum.fits").replace(INPUT_PATH, OUTPUT_PATH)
+    output_file_max = inputfile_data.replace(".fits", "_max.fits").replace(INPUT_PATH, OUTPUT_PATH)
+    output_file_err = inputfile_data.replace(".fits", "_sum_err.fits").replace(INPUT_PATH, OUTPUT_PATH)
+
+    if inputfile_data == output_file_sum or inputfile_data == output_file_max or inputfile_data == output_file_err:
         print(RED + "Error: input and output files are the same." + ENDCOLOR)
         sys.exit()
 
     hdu_list = fits.open(inputfile_data)
-    hdu_data = hdu_list['DATA_EXT']
+    # hdu_data = hdu_list['DATA_EXT']
     hdu_err = hdu_list['STAT_EXT']
 
-    # Compute the images as before
-    sum_data = np.sum(hdu_data.data, axis=0)
-    max_data = np.max(hdu_data.data, axis=0)
+    # # Compute the images as before
+    # sum_data = np.sum(hdu_data.data, axis=0)
+    # max_data = np.max(hdu_data.data, axis=0)
     sum_err = hdu_err.data[0]
 
-    # Prepare a 3x3 grid of subplots.
-    fig, axs = plt.subplots(3, 3, figsize=(15, 15))
-    
-    # Organize the three images and corresponding titles.
-    data_images = [sum_data, max_data, sum_err]
-    titles = ["Sum Data", "Max Data", "Sum Error"]
+    # hdu_data_sum = fits.PrimaryHDU(sum_data, header=hdu_data.header)
+    # hdu_data_max = fits.PrimaryHDU(max_data, header=hdu_data.header)
+    hdu_err_sum = fits.PrimaryHDU(sum_err, header=hdu_err.header)
 
-    # Loop over each row (each percentile range) and column (each image)
-    for row, (p_low, p_high) in enumerate(percentile_ranges):
-        for col, (image, title) in enumerate(zip(data_images, titles)):
-            ax = axs[row, col]
-            # Compute the vmin and vmax based on the given percentile range
-            vmin = np.nanpercentile(image, p_low)
-            vmax = np.nanpercentile(image, p_high)
-            ax.imshow(image, origin='lower', vmin=vmin, vmax=vmax)
-            ax.set_title(f"{title}\n{p_low}-{p_high} Percentile")
-            # Remove tick labels
-            ax.set_xticklabels([])
-            ax.set_yticklabels([])
-            # Add a grid for visual reference
-            ax.grid(True, ls='--', color='w', alpha=0.3)
-
-    fig.tight_layout()
-    fig.savefig(output_file, bbox_inches='tight', dpi=300)
-
-    print('INITIALIZING PROCESS FOR FILE')
-    print("   Input file: ", inputfile_data)
-    print("   Output file: ", output_file)
-    print("\n")
+    hdu_err_sum.writeto(output_file_err, overwrite=True)

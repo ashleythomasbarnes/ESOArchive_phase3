@@ -1,0 +1,557 @@
+20.07.2009
+
+#Making experiment with BoA on aida48.
+
+source /usr/local/misc/boa/Boa-2008-02-15/.boarc.sh 
+boa
+
+#This means things are in:
+
+/usr/local/misc/boa/Boa-2008-02-15/
+
+###
+
+#How to end session:
+close(0) % close the graphic display
+CTR+D
+
+
+#Set input directory and project name
+
+boa> indir('/disk1/sicilia/CrA_Apex/Data')
+boa< I: input directory : /disk1/sicilia/CrA_Apex/Data/
+boa> proj('E-081.C-0204A-2008')
+
+#List the files there
+
+boa> ils()
+boa< W: list empty, populating...
+boa< W: APEX-39345-2008-08-18-E-081.C-0204A-2008.fits is a bad MBFits file ('Dat
+aset /disk1/sicilia/CrA_Apex/Data/APEX-39345-2008-08-18-E-081.C-0204A-2008.fits
+not open'), removed from list
+boa< W: APEX-40165-2008-08-22-E-081.C-0204A-2008.fits different number of rows in ARRAYDATA and DATAP
+AR for subscan 1 - still readable
+ APEX-39216-2008-08-17-E-081.C-0204A-2008     BOLOTIP-EL82        CAL   2      10   ['LABOCA-ABBA'] [318] 54695.078 (  1.0 MB)
+ APEX-39217-2008-08-17-E-081.C-0204A-2008           SKYDIP     SKYDIP   1       1   ['LABOCA-ABBA'] [318] 54695.078 (  2.3 MB)
+ APEX-39218-2008-08-17-E-081.C-0204A-2008        IRAS16293      POINT   1      35   ['LABOCA-ABBA'] [318] 54695.079 (  2.8 MB)
+ APEX-39219-2008-08-17-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54695.080 ( 47.6 MB)
+ APEX-39220-2008-08-17-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54695.088 ( 26.7 MB)
+ APEX-39221-2008-08-17-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54695.093 ( 47.9 MB)
+ APEX-39222-2008-08-17-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54695.102 ( 26.7 MB)
+ APEX-39223-2008-08-17-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54695.107 ( 47.2 MB)
+ APEX-39224-2008-08-17-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54695.115 ( 26.5 MB)
+ APEX-39225-2008-08-17-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54695.120 ( 47.7 MB)
+ APEX-39226-2008-08-17-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54695.128 ( 26.7 MB)
+ APEX-39227-2008-08-17-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54695.133 ( 47.4 MB)
+ APEX-39228-2008-08-17-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54695.141 ( 26.6 MB)
+ APEX-39229-2008-08-17-E-081.C-0204A-2008           Uranus      POINT   1      35   ['LABOCA-ABBA'] [318] 54695.147 (  2.8 MB)
+ APEX-39337-2008-08-18-E-081.C-0204A-2008     BOLOTIP-EL82        CAL   2      10   ['LABOCA-ABBA'] [318] 54696.203 (  1.1 MB)
+ APEX-39338-2008-08-18-E-081.C-0204A-2008           SKYDIP     SKYDIP   1       1   ['LABOCA-ABBA'] [318] 54696.203 (  1.9 MB)
+ APEX-39339-2008-08-18-E-081.C-0204A-2008           G10.62      POINT   1      35   ['LABOCA-ABBA'] [318] 54696.204 (  2.6 MB)
+ APEX-39340-2008-08-18-E-081.C-0204A-2008        J1800-241      POINT   1      35   ['LABOCA-ABBA'] [318] 54696.205 (  2.6 MB)
+ APEX-39341-2008-08-18-E-081.C-0204A-2008    PMNJ1957-3845        MAP   1      35   ['LABOCA-ABBA'] [318] 54696.207 ( 10.4 MB)
+ APEX-39342-2008-08-18-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54696.210 ( 47.4 MB)
+ APEX-39343-2008-08-18-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54696.219 ( 26.8 MB)
+ APEX-39344-2008-08-18-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54696.224 ( 47.5 MB)
+ APEX-39348-2008-08-18-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54696.262 ( 47.7 MB)
+ APEX-39349-2008-08-18-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54696.270 ( 26.9 MB)
+ APEX-39350-2008-08-18-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54696.275 ( 47.3 MB)
+ APEX-40155-2008-08-22-E-081.C-0204A-2008          Jupiter      POINT   1      20   ['LABOCA-ABBA'] [318] 54700.091 (  1.6 MB)
+ APEX-40156-2008-08-22-E-081.C-0204A-2008          Jupiter      POINT   1      35   ['LABOCA-ABBA'] [318] 54700.092 (  2.6 MB)
+ APEX-40157-2008-08-22-E-081.C-0204A-2008          Jupiter      POINT   1      35   ['LABOCA-ABBA'] [318] 54700.093 (  2.6 MB)
+ APEX-40158-2008-08-22-E-081.C-0204A-2008          Jupiter    FOCUS-Z  10      50   ['LABOCA-ABBA'] [318] 54700.094 (  4.6 MB)
+ APEX-40159-2008-08-22-E-081.C-0204A-2008        IRAS16293      POINT   1      35   ['LABOCA-ABBA'] [318] 54700.096 (  2.5 MB)
+ APEX-40160-2008-08-22-E-081.C-0204A-2008    PMNJ1957-3845        MAP   1      35   ['LABOCA-ABBA'] [318] 54700.097 ( 10.2 MB)
+ APEX-40161-2008-08-22-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54700.100 ( 47.5 MB)
+ APEX-40162-2008-08-22-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54700.108 ( 26.6 MB)
+ APEX-40163-2008-08-22-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54700.113 ( 47.3 MB)
+ APEX-40164-2008-08-22-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54700.121 ( 26.6 MB)
+ APEX-40165-2008-08-22-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54700.127 ( 47.4 MB)
+ APEX-40166-2008-08-22-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54700.136 ( 26.5 MB)
+ APEX-40167-2008-08-22-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54700.141 ( 47.9 MB)
+ APEX-40168-2008-08-22-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54700.149 ( 26.5 MB)
+ APEX-40169-2008-08-22-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54700.154 ( 47.5 MB)
+ APEX-40170-2008-08-22-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54700.162 ( 26.6 MB)
+ APEX-40171-2008-08-22-E-081.C-0204A-2008           G10.62      POINT   1      35   ['LABOCA-ABBA'] [318] 54700.168 (  2.9 MB)
+ APEX-40173-2008-08-22-E-081.C-0204A-2008     BOLOTIP-EL82        CAL   2      10   ['LABOCA-ABBA'] [318] 54700.169 (  1.2 MB)
+ APEX-40174-2008-08-22-E-081.C-0204A-2008           SKYDIP     SKYDIP   1       1   ['LABOCA-ABBA'] [318] 54700.171 (  2.3 MB)
+ APEX-40446-2008-08-23-E-081.C-0204A-2008        IRAS16293      POINT   1      35   ['LABOCA-ABBA'] [318] 54701.077 (  2.6 MB)
+ APEX-40447-2008-08-23-E-081.C-0204A-2008    PMNJ1957-3845        MAP   1      35   ['LABOCA-ABBA'] [318] 54701.077 ( 10.3 MB)
+ APEX-40448-2008-08-23-E-081.C-0204A-2008    PMNJ1957-3845        MAP   1      35   ['LABOCA-ABBA'] [318] 54701.080 ( 10.2 MB)
+ APEX-40450-2008-08-23-E-081.C-0204A-2008     BOLOTIP-EL82        CAL   2      10   ['LABOCA-ABBA'] [318] 54701.083 (  1.1 MB)
+ APEX-40451-2008-08-23-E-081.C-0204A-2008           SKYDIP     SKYDIP   1       1   ['LABOCA-ABBA'] [318] 54701.083 (  2.0 MB)
+ APEX-40452-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.084 ( 48.4 MB)
+ APEX-40453-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.093 ( 26.8 MB)
+ APEX-40454-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.098 ( 47.1 MB)
+ APEX-40455-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.106 ( 26.7 MB)
+ APEX-40456-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.111 ( 47.5 MB)
+ APEX-40457-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.119 ( 26.8 MB)
+ APEX-40458-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.124 ( 47.9 MB)
+ APEX-40459-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.132 ( 26.5 MB)
+ APEX-40460-2008-08-23-E-081.C-0204A-2008    PMNJ1957-3845        MAP   1      35   ['LABOCA-ABBA'] [318] 54701.137 ( 10.3 MB)
+ APEX-40461-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.140 ( 47.5 MB)
+ APEX-40462-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.148 ( 26.4 MB)
+ APEX-40463-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.153 ( 47.2 MB)
+ APEX-40464-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.161 ( 26.5 MB)
+ APEX-40465-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.166 ( 47.5 MB)
+ APEX-40571-2008-08-23-E-081.C-0204A-2008           G10.62      POINT   1      35   ['LABOCA-ABBA'] [318] 54701.957 (  2.6 MB)
+ APEX-40572-2008-08-23-E-081.C-0204A-2008    PMNJ1957-3845        MAP   1      35   ['LABOCA-ABBA'] [318] 54701.959 ( 10.5 MB)
+ APEX-40574-2008-08-23-E-081.C-0204A-2008     BOLOTIP-EL82        CAL   2      10   ['LABOCA-ABBA'] [318] 54701.961 (  1.0 MB)
+ APEX-40575-2008-08-23-E-081.C-0204A-2008           SKYDIP     SKYDIP   1       1   ['LABOCA-ABBA'] [318] 54701.962 (  2.0 MB)
+ APEX-40576-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.964 ( 47.3 MB)
+ APEX-40577-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.972 ( 26.5 MB)
+ APEX-40578-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.977 ( 47.6 MB)
+ APEX-40579-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.986 ( 26.5 MB)
+ APEX-40580-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.990 ( 47.3 MB)
+ APEX-40581-2008-08-23-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54701.999 ( 26.6 MB)
+ APEX-40582-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.003 ( 47.1 MB)
+ APEX-40583-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.012 ( 26.3 MB)
+ APEX-40584-2008-08-24-E-081.C-0204A-2008    PMNJ1957-3845        MAP   1      35   ['LABOCA-ABBA'] [318] 54702.016 ( 10.1 MB)
+ APEX-40585-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.019 ( 47.5 MB)
+ APEX-40586-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.028 ( 26.6 MB)
+ APEX-40587-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.032 ( 47.5 MB)
+ APEX-40589-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.041 ( 47.5 MB)
+ APEX-40590-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.049 ( 26.6 MB)
+ APEX-40591-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.054 ( 47.7 MB)
+ APEX-40592-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.062 ( 26.8 MB)
+ APEX-40593-2008-08-24-E-081.C-0204A-2008    PMNJ1957-3845        MAP   1      35   ['LABOCA-ABBA'] [318] 54702.069 ( 10.4 MB)
+ APEX-40594-2008-08-24-E-081.C-0204A-2008           G10.62      POINT   1      35   ['LABOCA-ABBA'] [318] 54702.072 (  2.8 MB)
+ APEX-40595-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.073 ( 47.9 MB)
+ APEX-40596-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.081 ( 26.7 MB)
+ APEX-40597-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.086 ( 47.7 MB)
+ APEX-40598-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.094 ( 26.5 MB)
+ APEX-40599-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.099 ( 47.2 MB)
+ APEX-40600-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.107 ( 26.5 MB)
+ APEX-40601-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.112 ( 47.3 MB)
+ APEX-40602-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.121 ( 26.6 MB)
+ APEX-40603-2008-08-24-E-081.C-0204A-2008        J1800-241        MAP   1      20   ['LABOCA-ABBA'] [318] 54702.126 (  6.0 MB)
+ APEX-40604-2008-08-24-E-081.C-0204A-2008           G10.62      POINT   1      35   ['LABOCA-ABBA'] [318] 54702.127 (  2.6 MB)
+ APEX-40605-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.128 ( 47.5 MB)
+ APEX-40606-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.137 ( 26.6 MB)
+ APEX-40607-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.141 ( 47.7 MB)
+ APEX-40608-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.150 ( 26.6 MB)
+ APEX-40609-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.154 ( 47.6 MB)
+ APEX-40610-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.163 ( 26.6 MB)
+ APEX-40611-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.168 ( 47.2 MB)
+ APEX-40612-2008-08-24-E-081.C-0204A-2008       CrA_Center        MAP   1      40   ['LABOCA-ABBA'] [318] 54702.176 ( 26.6 MB)
+ APEX-40613-2008-08-24-E-081.C-0204A-2008           G10.62      POINT   1      35   ['LABOCA-ABBA'] [318] 54702.181 (  2.8 MB)
+ APEX-40615-2008-08-24-E-081.C-0204A-2008     BOLOTIP-EL82        CAL   2      10   ['LABOCA-ABBA'] [318] 54702.183 (  1.1 MB)
+ APEX-40616-2008-08-24-E-081.C-0204A-2008           SKYDIP     SKYDIP   1       1   ['LABOCA-ABBA'] [318] 54702.184 (  2.0 MB)
+boa> 
+
+#Open display
+
+boa> op()
+
+#Set directory:
+
+boa> lab = os.getenv('BOA_HOME_LABOCA')
+
+
+###
+###
+###
+
+#Calibrating
+
+#NEED TO GET PLANET FLUXES WITH ASTRO! Do it in the laptop:
+
+planet_calibration.txt
+
+39229-2008-08-17           Uranus POINT Flux     66.48  Size   19.4
+40155-2008-08-22          Jupiter POINT Flux   5626.32  Size   40.7
+40156-2008-08-22          Jupiter POINT Flux   5626.32  Size   40.7
+40157-2008-08-22          Jupiter POINT Flux   5626.31  Size   40.7
+
+###
+
+#Bolotip
+
+boa> lab = os.getenv('BOA_HOME_LABOCA')
+boa> scannr = 39216
+boa> execfile(lab+'/reduce-skydip.boa')                                                             
+
+boa< I: ---- calibration hot-sky ----
+boa< I: Tsky = 110.24 K
+boa< I: ----   skydip  results   ----
+boa< I: Signal corrected for blind bolos
+boa< I: Coupling = 73.02 %
+boa< I: tau_z    = 0.165
+boa< I: Tatm     = 261.79 K
+
+#If tau=1.3 * tau_z = 0.215
+
+#For the rest of the scans:
+
+boa> scannr = 39337       
+boa< I: ---- calibration hot-sky ----
+boa< I: Tsky = 112.06 K
+boa< I: ----   skydip  results   ----
+boa< I: Signal corrected for blind bolos
+boa< I: Coupling = 71.18 %
+boa< I: tau_z    = 0.150
+boa< I: Tatm     = 262.63 K
+
+boa> scannr = 40173      
+boa< I: ---- calibration hot-sky ----
+boa< I: Tsky =  98.92 K
+boa< I: ----   skydip  results   ----
+boa< I: Signal corrected for blind bolos
+boa< I: Coupling = 75.89 %
+boa< I: tau_z    = 0.137
+boa< I: Tatm     = 264.60 K
+
+boa> scannr =40450    
+boa< I: ---- calibration hot-sky ----
+boa< I: Tsky = 137.42 K
+boa< I: ----   skydip  results   ----
+boa< I: Signal corrected for blind bolos
+boa< I: Coupling = 65.81 %
+boa< I: tau_z    = 0.243
+boa< I: Tatm     = 266.66 K
+
+boa> scannr = 40574       
+boa< I: ---- calibration hot-sky ----
+boa< I: Tsky = 111.87 K
+boa< I: ----   skydip  results   ----
+boa< I: Signal corrected for blind bolos
+boa< I: Coupling = 72.76 %
+boa< I: tau_z    = 0.171
+boa< I: Tatm     = 265.74 K
+
+boa> scannr = 40615         
+boa< I: ---- calibration hot-sky ----
+boa< I: Tsky = 101.21 K
+boa< I: ----   skydip  results   ----
+boa< I: Signal corrected for blind bolos
+boa< I: Coupling = 75.34 %
+boa< I: tau_z    = 0.142
+boa< I: Tatm     = 268.19 K
+
+#Note on the skydip reduction: the fit (red line) is always a bit off.
+
+
+###
+###
+###
+
+#Calibrators:
+
+boa> read(39218)
+boa< I: Scan number 39218 : OTF  POINT on IRAS16293 contains   1 subscan(s),   948/  948 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain: 64/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+boa> opac(1.3*0.165)
+boa< L: Building a map with dimensions (x,y) = 67,67
+boa< I: map r.m.s. = 0.341164
+boa< I: Peak flux    = 15.4594823327
+boa< I: Delta Az ["] = -2.60026397697
+boa< I: Delta El ["] = 3.16714738856
+boa< I: FWHM_1   ["] = 23.5251941054
+boa< I: FWHM_2   ["] = 20.6384176672
+boa< I: Tilt   [deg] = -141.34191178
+boa< I: map r.m.s. = 0.341164
+------------------------------------------------------------------------------------------
+FLUX IRAS16293:  15.459482 [expected: 16.500000, 93.693832 percent]
+------------------------------------------------------------------------------------------
+
+
+boa> read(39229)
+boa< I: Scan number 39229 : OTF  POINT on Uranus contains   1 subscan(s),   963/  976 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain: 64/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+oa< L: Building a map with dimensions (x,y) = 67,67
+boa< I: map r.m.s. = 9855.309570
+boa< I: Peak flux    = 1945430.26285
+boa< I: Delta Az ["] = 12.2515726483
+boa< I: Delta El ["] = 3.01159253543
+boa< I: FWHM_1   ["] = 22.8724797498
+boa< I: FWHM_2   ["] = 20.9873454515
+boa< I: Tilt   [deg] = -9.47221124275
+boa< I: map r.m.s. = 9855.309570
+------------------------------------------------------------------------------------------
+FLUX Uranus:  1945430.262853 [expected: 66.000000, 2947621.610384 percent]
+------------------------------------------------------------------------------------------
+
+
+boa> read(39339)
+boa< I: Scan number 39339 : OTF  POINT on G10.62 contains   1 subscan(s),   888/  888 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain: 64/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+boa< L: Building a map with dimensions (x,y) = 67,67
+boa< I: map r.m.s. = 0.522411
+boa< I: Peak flux    = 32.5699092409
+boa< I: Delta Az ["] = 3.15268352333
+boa< I: Delta El ["] = 1.24518830287
+boa< I: FWHM_1   ["] = 22.9730032454
+boa< I: FWHM_2   ["] = 26.2434457619
+boa< I: Tilt   [deg] = -4.39307680856
+boa< I: map r.m.s. = 0.522411
+------------------------------------------------------------------------------------------
+FLUX G10.62:  32.569909 [expected: 33.000000, 98.696695 percent]
+------------------------------------------------------------------------------------------
+
+boa> read(39340)
+boa< I: Scan number 39340 : OTF  POINT on J1800-241 contains   1 subscan(s),   898/  898 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain: 64/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+boa< I: 4 channel(s) flagged ([83, 219, 227, 307]) with flag 2
+boa< I: 4526 samples unflagged with flag [8]
+boa< L: Building a map with dimensions (x,y) = 67,67
+boa< I: map r.m.s. = 0.491758
+boa< I: Peak flux    = 27.4945193219
+boa< I: Delta Az ["] = -2.98439012384
+boa< I: Delta El ["] = 0.387614896948
+boa< I: FWHM_1   ["] = 24.0453741913
+boa< I: FWHM_2   ["] = 22.1212111557
+boa< I: Tilt   [deg] = 27.0699556224
+boa< I: map r.m.s. = 0.491758
+Calibrator not found in secondary-calibrator-flux.boa
+
+
+boa> read(39341)
+boa< I: Scan number 39341 : OTF  MAP on PMNJ1957-3845 contains   1 subscan(s),  3748/ 3748 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain: 64/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+
+boa> opac(1.3*0.150)
+boa> execfile(lab+'/reduce-calib-map.boa')
+boa< L: Building a map with dimensions (x,y) = 67,67
+boa< I: map r.m.s. = 0.068876
+boa< I: Peak flux    = 0.500627907388
+boa< I: Delta Az ["] = -2.17540613183
+boa< I: Delta El ["] = 1.89454942489
+boa< I: FWHM_1   ["] = 19.4573587108
+boa< I: FWHM_2   ["] = 25.6211707904
+boa< I: Tilt   [deg] = -5.47361747353
+boa< I: map r.m.s. = 0.068876
+Calibrator not found in secondary-calibrator-flux.boa
+
+boa> read(40155)
+boa< I: Scan number 40155 : OTF  POINT on Jupiter contains   1 subscan(s),   518/  518 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain: 64/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+boa> opac(1.3*0.137)
+boa> execfile(lab+'/reduce-calib-map.boa')
+boa< I: 2 channel(s) flagged ([81, 89]) with flag 2
+boa< I: 12 channel(s) flagged ([7, 9, 54, 78, 84, 104, 107, 168, 198, 219, 234, 246]) with flag 2
+boa< I: 619 samples unflagged with flag [8]
+boa< L: Building a map with dimensions (x,y) = 67,67
+boa< I: map r.m.s. = 2.258840
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+  File "/usr/local/misc/boa/Boa-2008-02-15/laboca/reduce-calib-map.boa", line 46, in ?
+    solvePointingOnMap(plot=1,radius=30)
+  File "/usr/local/misc/boa/Boa-2008-02-15/boa/BoaPointing.py", line 264, in solvePointingOnMap
+    fixedPos=fixedPos)
+  File "/usr/local/misc/boa/Boa-2008-02-15/boa/BoaMapping.py", line 631, in extractSource
+    fixedPos=fixedPos)
+  File "/usr/local/misc/boa/Boa-2008-02-15/boa/Utilities.py", line 647, in fitBaseEllipticalGaussian
+    parinfo[4]['limits'] = [min(lX),max(lX)]
+ValueError: min() or max() arg is an empty sequence
+
+
+boa> read(40156)
+boa< I: Scan number 40156 : OTF  POINT on Jupiter contains   1 subscan(s),   891/  891 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain: 64/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+  File "/usr/local/misc/boa/Boa-2008-02-15/laboca/reduce-calib-map.boa", line 46, in ?
+    solvePointingOnMap(plot=1,radius=30)
+  File "/usr/local/misc/boa/Boa-2008-02-15/boa/BoaPointing.py", line 264, in solvePointingOnMap
+    fixedPos=fixedPos)
+  File "/usr/local/misc/boa/Boa-2008-02-15/boa/BoaMapping.py", line 631, in extractSource
+    fixedPos=fixedPos)
+  File "/usr/local/misc/boa/Boa-2008-02-15/boa/Utilities.py", line 647, in fitBaseEllipticalGaussian
+    parinfo[4]['limits'] = [min(lX),max(lX)]
+ValueError: min() or max() arg is an empty sequence
+
+boa> read(40157)
+boa< I: Scan number 40157 : OTF  POINT on Jupiter contains   1 subscan(s),   896/  896 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain:  8/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+  File "/usr/local/misc/boa/Boa-2008-02-15/laboca/reduce-calib-map.boa", line 46, in ?
+    solvePointingOnMap(plot=1,radius=30)
+  File "/usr/local/misc/boa/Boa-2008-02-15/boa/BoaPointing.py", line 264, in solvePointingOnMap
+    fixedPos=fixedPos)
+  File "/usr/local/misc/boa/Boa-2008-02-15/boa/BoaMapping.py", line 631, in extractSource
+    fixedPos=fixedPos)
+  File "/usr/local/misc/boa/Boa-2008-02-15/boa/Utilities.py", line 647, in fitBaseEllipticalGaussian
+    parinfo[4]['limits'] = [min(lX),max(lX)]
+ValueError: min() or max() arg is an empty sequence
+
+
+
+boa> read(40159)
+boa< I: Scan number 40159 : OTF  POINT on IRAS16293 contains   1 subscan(s),   879/  887 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain: 64/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+boa< L: Building a map with dimensions (x,y) = 67,67
+boa< I: map r.m.s. = 0.289786
+boa< I: Peak flux    = 12.2859851546
+boa< I: Delta Az ["] = 2.48043057726
+boa< I: Delta El ["] = 0.219236195115
+boa< I: FWHM_1   ["] = 23.9215119113
+boa< I: FWHM_2   ["] = 21.0862668923
+boa< I: Tilt   [deg] = 33.5094405287
+boa< I: map r.m.s. = 0.289786
+------------------------------------------------------------------------------------------
+FLUX IRAS16293:  12.285985 [expected: 16.500000, 74.460516 percent]
+------------------------------------------------------------------------------------------
+
+boa> read(40160)
+boa< I: Scan number 40160 : OTF  MAP on PMNJ1957-3845 contains   1 subscan(s),  3688/ 3688 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain: 64/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+boa< L: Building a map with dimensions (x,y) = 67,67
+boa< I: map r.m.s. = 0.042392
+boa< I: Peak flux    = 0.340458429474
+boa< I: Delta Az ["] = -6.76637470814
+boa< I: Delta El ["] = -8.15177435241
+boa< I: FWHM_1   ["] = 20.2729600352
+boa< I: FWHM_2   ["] = 16.9213586013
+boa< I: Tilt   [deg] = 35.976741884
+boa< I: map r.m.s. = 0.042392
+Calibrator not found in secondary-calibrator-flux.boa
+
+boa> read(40572)
+boa< I: Scan number 40572 : OTF  MAP on PMNJ1957-3845 contains   1 subscan(s),  3790/ 3798 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain: 64/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+boa> opac(1.3*0.171)
+boa< I: 19265 samples unflagged with flag [8]
+boa< L: Building a map with dimensions (x,y) = 67,67
+boa< I: map r.m.s. = 0.063021
+boa< I: Peak flux    = 0.405690523741
+boa< I: Delta Az ["] = -2.16035435579
+boa< I: Delta El ["] = -4.84000333761
+boa< I: FWHM_1   ["] = 26.8224572535
+boa< I: FWHM_2   ["] = 17.236539843
+boa< I: Tilt   [deg] = -26.2643597416
+boa< I: map r.m.s. = 0.063021
+Calibrator not found in secondary-calibrator-flux.boa
+
+boa> read(40584)
+boa< I: Scan number 40584 : OTF  MAP on PMNJ1957-3845 contains   1 subscan(s),  3671/ 3673 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain: 64/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+0
+boa> opac(1.3*0.142)
+boa< I: 10 channel(s) flagged ([49, 83, 204, 219, 227, 244, 246, 249, 260, 307]) with flag 2
+boa< I: 18676 samples unflagged with flag [8]
+boa< L: Building a map with dimensions (x,y) = 67,67
+boa< I: map r.m.s. = 0.051415
+boa< I: Peak flux    = 0.421006163691
+boa< I: Delta Az ["] = -1.78975089078
+boa< I: Delta El ["] = -3.22323903251
+boa< I: FWHM_1   ["] = 20.7864547771
+boa< I: FWHM_2   ["] = 16.8689374041
+boa< I: Tilt   [deg] = 310.772078396
+boa< I: map r.m.s. = 0.051415
+Calibrator not found in secondary-calibrator-flux.boa
+
+
+boa> read(40593)
+boa< I: Scan number 40593 : OTF  MAP on PMNJ1957-3845 contains   1 subscan(s),  3764/ 3773 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain: 64/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+0
+boa> execfile(lab+'/reduce-calib-map.boa')
+boa< I: 19168 samples unflagged with flag [8]
+boa< L: Building a map with dimensions (x,y) = 67,67
+boa< I: map r.m.s. = 0.039185
+boa< I: Peak flux    = 0.347042382414
+boa< I: Delta Az ["] = -6.68256074
+boa< I: Delta El ["] = -1.36002045906
+boa< I: FWHM_1   ["] = 21.8770577994
+boa< I: FWHM_2   ["] = 17.43569718
+boa< I: Tilt   [deg] = 33.6800444354
+boa< I: map r.m.s. = 0.039185
+Calibrator not found in secondary-calibrator-flux.boa
+
+boa> read(40594)
+boa< I: Scan number 40594 : OTF  POINT on G10.62 contains   1 subscan(s),   967/  973 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain: 64/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+0
+boa> opac(1.3*0.142)
+boa> execfile(lab+'/reduce-calib-map.boa')
+boa< I: 4900 samples unflagged with flag [8]
+boa< L: Building a map with dimensions (x,y) = 67,67
+boa< I: map r.m.s. = 0.500102
+boa< I: Peak flux    = 30.5817008939
+boa< I: Delta Az ["] = -3.97635836859
+boa< I: Delta El ["] = 2.93184855667
+boa< I: FWHM_1   ["] = 22.491871996
+boa< I: FWHM_2   ["] = 25.9229334956
+boa< I: Tilt   [deg] = -0.384189617089
+boa< I: map r.m.s. = 0.500102
+------------------------------------------------------------------------------------------
+FLUX G10.62:  30.581701 [expected: 33.000000, 92.671821 percent]
+------------------------------------------------------------------------------------------
+
+boa> read(40603)
+boa< I: Scan number 40603 : OTF  MAP on J1800-241 contains   1 subscan(s),  2213/ 2225 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain: 64/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+
+boa< I: 8 channel(s) flagged ([49, 83, 204, 222, 227, 246, 260, 307]) with flag 2
+boa< I: 11234 samples unflagged with flag [8]
+boa< L: Building a map with dimensions (x,y) = 67,67
+boa< I: map r.m.s. = 0.377363
+boa< I: Peak flux    = 20.7492112558
+boa< I: Delta Az ["] = 2.60684423825
+boa< I: Delta El ["] = 8.58750514564
+boa< I: FWHM_1   ["] = 23.366601793
+boa< I: FWHM_2   ["] = 24.5088886241
+boa< I: Tilt   [deg] = -51.1336001111
+boa< I: map r.m.s. = 0.377363
+Calibrator not found in secondary-calibrator-flux.boa
+
+boa> read(40604)
+boa< I: Scan number 40604 : OTF  POINT on G10.62 contains   1 subscan(s),   892/  892 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain: 64/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+boa< I: 4490 samples unflagged with flag [8]
+boa< L: Building a map with dimensions (x,y) = 67,67
+boa< I: map r.m.s. = 0.405636
+boa< I: Peak flux    = 25.6906458996
+boa< I: Delta Az ["] = 5.98741789574
+boa< I: Delta El ["] = 8.79448415518
+boa< I: FWHM_1   ["] = 23.1429418211
+boa< I: FWHM_2   ["] = 27.0729772634
+boa< I: Tilt   [deg] = -3.19914497662
+boa< I: map r.m.s. = 0.405636
+------------------------------------------------------------------------------------------
+FLUX G10.62:  25.690646 [expected: 33.000000, 77.850442 percent]
+------------------------------------------------------------------------------------------
+
+boa> read(40613)
+boa< I: Scan number 40613 : OTF  POINT on G10.62 contains   1 subscan(s),   971/  973 records
+boa< I: LABOCA-ABBA - 276/320/320 channels at 345 GHz (1-320) - FE/BE Gain: 64/  2
+boa< I: selected channels = 1-14; 17-28; 30-32; 34; 36-39; 41-63; 65; 67-86; 89-94; 96-123; 125-134; 136-138; 140-141; 147-148; 152-157; 159-177; 179-180; 182-185; 191-192; 194; 196-199; 201-223; 225; 227-254; 256-283; 285-294; 296-301; 303; 305; 307-309; 312-316; 318-320
+0
+
+###
+###
+
+#Problem: don't have access right to modify the planet fluxes for these observations in:
+/usr/local/misc/boa/Boa-2008-02-15/laboca/secondary-calibrator-flux.boa
+
+#Notes on the scans from Bolologs:
+
+23697-699: 	failed
+39345:		server restarted
+40165, 40166: 	look weird
+40588:		no data
+
+
+#Strategy:
+
+1) Make 1 map per day with calibration, tau, etc.
+---> Try the extended source and weak source, do all for each.
+
+2) Sum all maps together.
