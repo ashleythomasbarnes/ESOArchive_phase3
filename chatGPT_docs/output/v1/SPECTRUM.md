@@ -11,12 +11,36 @@
 * Products are fully calibrated, documented, and traceable.
 * FITS headers capture observation context, calibration status, and VO interoperability.
 
-### 1.1 Overview of how to submit data to Phase 3
+### 1.1 What is Phase 3?
 
-1. Prepare FITS files per this guide (structure + keywords).
-2. Provide a concise release description (methods, calibrations, data quality).
-3. Validate locally (headers, VO fields, checksums) and then with Phase 3 tools.
-4. Deliver via the Phase 3 process (batch with unique filenames; include ancillary files if needed).
+**Phase 3** is ESO’s process to **prepare, validate, ingest, and publish** Science Data Products (SDPs) in the ESO Science Archive. SDPs are **fully calibrated** (instrumental/atmospheric signatures removed), in **physical units**, with **documented noise properties** (e.g. S/N, limiting magnitude).
+
+**Who produces SDPs:**
+- PIs of ESO programmes (public surveys, large and calibration programmes)
+- ESO scientists via pipelines/QC or dedicated re-processing of homogeneous data sets
+- Users of **non-ESO telescopes** (e.g. GTC, NGTS)
+- PIs of normal ESO programmes (voluntary)
+- Community members publishing **archival** results
+
+**Policy:** Phase 3 is **mandatory** for **Public Surveys** and **Large Programmes** since **Period 75**; **optional** for other programmes.
+
+**Support:** ESO provides **standards**, **procedures/infrastructure** (Release Manager, FTP), and **tools** for data preparation.
+
+**Audience:** (1) PIs/collaborators returning reduced data from ESO or non-ESO facilities; (2) ESO scientists in QC/reprocessing; (3) instrument scientists & pipeline developers; (4) archive users who need to understand SDP structure/format.
+
+### 1.2 Overview of how to submit data to Phase 3
+
+**1) Register your collection.** Open the **Phase 3 Release Manager (RM)** and log in with **ESO User Portal** credentials. If your programme isn’t listed under *Data Collections*, contact Phase 3 Operations via the Helpdesk with subject `REQUEST FOR PHASE 3 PROGRAMME <PPP.C-NNNN>`. You’ll receive confirmation (typically within one working day) and the collection will appear in RM.
+
+**2) Prepare your data.** Format files per the **ESO Science Data Products Standard (latest)** -- see Section 2 below for SPECTRUM specifics.
+
+**3) Upload your data.** FTP to `phase3ftp.eso.org` using the **path shown in RM**: `/<Data collection name>/batch_<ID>`. Use any client (e.g. **lftp**, **FileZilla**); log in with your User Portal credentials. Access is limited to the **PI**, **survey manager**, and **delegates**. Files can be replaced/removed **until you close** the batch. Resolve format issues first (see automatic **Phase 3 checks**).
+
+**4) Run server-side checks.** In RM, click **CLOSE** to trigger format/provenance verification. Processing time depends on volume; you’ll get an **e‑mail** when done. Fix any issues and re-open if needed. *Note:* closing makes the FTP directory **read‑only**.
+
+**5) Upload the release description (PDF).** Summarise **release content**, **originating observations**, **calibration & reduction**, **data quality**, **data format**, and (optionally) **scientific context**. For more information on preparing this document, see the [Release Description Overview](https://www.eso.org/sci/observing/phase3/release_description.html) page, and for the template, see the [Phase 3 Release Description Template](https://www.eso.org/sci/observing/phase3/release-description-tmpl.docx) page. 
+
+**6) Finalise and submit.** The **PI** (not delegable) presses **SUBMIT** to confirm consistency with the release description. Review the **Content Summary** (file counts, data types, dates, sky coverage). ESO performs **final content validation** and publishes the data; if issues remain, you’ll receive a **report** with next steps.
 
 ---
 
@@ -185,3 +209,7 @@
 * `FLUX_NORM` (continuum-normalised) → include `arith.ratio` in UCD; `TUNIT=''`.
 * `ERR` → `stat.error;phot.flux.density;em.wl` (add `;meta.main` if default).
 * `EXPOSURE` → `time.duration;obs.exposure`; `TUNIT='s'`.
+
+---
+
+> Note: For further details, refer to the official [ESO Phase 3 Documentation](https://www.eso.org/sci/observing/phase3/Phase3_doc.html) and the [Data Interface Control Document (DICD)](https://www.eso.org/sci/observing/phase3/DICD/DICD_latest.pdf).
