@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+"""
+Package associated FITS products and update primary FITS headers.
+
+Workflow summary:
+- Find all primary science files in a target directory.
+- Verify one-to-one completeness with required associated products (by number of files).
+- Tar the S2D products, delete the originals, compute the tar MD5.
+- Update header association keywords in each primary FITS file.
+"""
+
 import sys
 from glob import glob
 import os
@@ -25,10 +35,12 @@ ASSOC5_VALUE = "ANCILLARY.2DECHELLE.TAR"
 
 
 def md5sum(path):
+    """Return the hex MD5 checksum of a file at path."""
     return hashlib.md5(open(path, "rb").read()).hexdigest()
 
 
 def main(data_dir):
+    """Run the packaging and header update workflow for data_dir."""
     print(f"Working directory: {data_dir}")
     assert os.path.isdir(data_dir), f"Not a directory: {data_dir}"
 
@@ -45,7 +57,7 @@ def main(data_dir):
     ]
     n = len(prefixes)
 
-    # Count checks
+    # Count checks to enforce one-to-one completeness
     for suf in ASSOCIATED_SUFFIXES:
         files = glob(os.path.join(data_dir, f"r.*{suf}"))
         print(f"Found {len(files)} files matching *{suf}")
@@ -85,7 +97,7 @@ def main(data_dir):
         # MD5
         tar_md5 = md5sum(tar_name)
 
-        # Header update
+        # Header update for the primary HDU
         print("  Updating FITS header")
         with fits.open(primary, mode="update") as hdul:
             hdr = hdul[0].header
