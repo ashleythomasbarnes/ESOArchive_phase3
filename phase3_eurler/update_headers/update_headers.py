@@ -90,14 +90,17 @@ def main(data_dir):
         with fits.open(primary, mode="update") as hdul:
             hdr = hdul[0].header
 
-            hdr["ASSON1"] = (os.path.basename(primary), "Assoc 1")
-            hdr["ASSON2"] = (os.path.basename(assoc_b), "Assoc 2")
-            hdr["ASSON3"] = (os.path.basename(assoc_ccf), "Assoc 3")
-            hdr["ASSON4"] = (os.path.basename(assoc_drift), "Assoc 4")
-            hdr["ASSON5"] = (os.path.basename(tar_name), "Assoc tar")
+            hdr["ASSON1"] = (os.path.basename(assoc_b), "Asson 1")
+            hdr["ASSON2"] = (os.path.basename(assoc_ccf), "Asson 2")
+            hdr["ASSON3"] = (os.path.basename(assoc_drift), "Asson 3")
+            hdr["ASSON4"] = (os.path.basename(tar_name), "Asson tar")
 
-            hdr["ASSOC5"] = (ASSOC5_VALUE, "Association class")
-            hdr["ASSOM5"] = (tar_md5, "MD5 checksum of ASSON5")
+            hdr["ASSOC4"] = (ASSOC5_VALUE, "Asson class")
+            hdr["ASSOM4"] = (tar_md5, "MD5 checksum")
+
+            # Update FITS integrity keywords for the primary HDU
+            hdul[0].add_datasum()
+            hdul[0].add_checksum()
 
             hdul.flush()
 
