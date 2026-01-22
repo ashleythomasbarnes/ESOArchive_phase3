@@ -98,6 +98,9 @@ def main(data_dir):
             hdr["ASSOC4"] = (ASSOC5_VALUE, "Asson class")
             hdr["ASSOM4"] = (tar_md5, "MD5 checksum")
 
+            if "ASSON5" in hdr:
+                del hdr["ASSON5"]
+
             # Update FITS integrity keywords for the primary HDU
             hdul[0].add_datasum()
             hdul[0].add_checksum()
