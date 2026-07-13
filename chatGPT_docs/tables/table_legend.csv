@@ -1,0 +1,8 @@
+﻿key,meaning
+MM,Keyword mandatory.
+ME,Keyword mandatory for ESO files.
+MA,"Keyword mandatory where applicable, refer to the table footnotes for more information."
+RE,Keyword recommended; it means applicable unless you have a good reason to not use it.
+NO,Keyword not allowed: the Phase 3 system will reject the file.
+OP,"It makes sense to provide the value, but it is optional."
+NA,"Keyword not applicable, i.e. it is not relevant in the context of the PRODCATG (or it is computed by the Phase 3 system) but it is tolerated, that is it is not checked by our system."
