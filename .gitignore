@@ -4,3 +4,7 @@
 **.fits
 *.zip
 *.tar
+/general/abmaglim_calculator/testing
+/general/abmaglim_calculator/scripts_pipeline
+/general/ra_dec_vs_tel_targ/figures
+p3sdpstd_v8.pdf
