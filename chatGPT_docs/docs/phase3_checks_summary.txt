@@ -1,0 +1,387 @@
+2025-03-27 phase3 
+
+All Phase3 files
+    filename cannot be longer than 68 characters
+    if filename ends with '.fz' must be compressed.
+    if the file is compressed its filename must end with '.fz'.
+    CHECKSUM and DATASUM in all extensions
+
+Recognised categories: SCIENCE.IMAGE, SCIENCE.MEFIMAGE, SCIENCE.SPECTRUM, SCIENCE.SRCTBL, SCIENCE.CUBE.IFS,
+      SCIENCE.CUBE, SCIENCE.IMAGE.FLUXMAP, SCIENCE.VISIBILITY, SCIENCE.VISIBILITY.UNCALIBRATED;
+
+      ANCILLARY.PREVIEW, WEIGHTMAP, GAINMAP, MASK, SPECTRUM, 2DSPECTRUM, IMAGE,
+      MOSSPECTRA, MOSSPECTRA.CALSIM, MOSSPECTRA.SKY, MOSSPECTRA.PREVIEW, RMSMAP, SNRMAP, RESMAP, SRCMASK,
+      FILTERED, SPECTRUM.TELLURIC, SPECTRUM.CONTINUUM, MUSE.PIXTABLE_REDUCED, KMOS.SCI_RECONSTRUCTED, EXPMAP, VARMAP,
+      PIXELCOUNTMAP, IMAGE.WHITELIGHT, CUBE.IFS.NO_TELLCORR, KMOS.SPECTRUM.TELLURIC, CUBE.IFS.SKY, CCF, DRIFT, PIXELCOUNT3D,
+      MPDAF.FIELDMAP, CUBE.IFS, 4MOST.MEC, IMAGE.COL_DENSITY
+
+SCIENCE.*
+    LONGSTR and CONTINUE are not allowed
+    Mandatory keywords: ORIGIN, OBSTECH, DATE, MJD-OBS, MJD-END, PROCSOFT, REFERENC
+      If collection is not VEXAS mandatory keywords TELESCOP, INSTRUME
+    DATE format required yyyy-MM-dd
+    ASSOC* must be in ANCILLARY.[PREVIEW, HARPSTAR, FEROSTAR, README, TAR,
+       MOSSPECTRA.PREVIEW, SRCTBL, 2DECHELLE.TAR, FORS2TAR, ANCILLARY.CUBE.LMV, CRIRESPTAR]
+    RADESYS in 'ICRS' or 'FK5'
+    If RADESYS='FK5', EQUINOX=2000.0 is mandatory. If RADESYS = 'ICRS', EQUINOX is
+    tolerated and its value needs to be 2000.0.
+    REFERENC must be the 19-digit bibliographic identifier, the DOI or empty string
+    MJD-END >= MJD-OBS
+    check MJD-OBS value. It cannot be < 40587
+    MJD-END cannot be grater than now
+    CDELT[123] are not allowed
+    TELESCOP=MULTI if TELESC1 is defined
+    if PROG_ID is MULTI PROGID1 and PROGID2 must be defined
+    INSTRUME=MULTI if INSTR1 is defined
+    if INSTRUME is MULTI INSTR1 and INSTR2 must be defined
+    PROG_ID=MULTI if PROGID1 is defined
+    if PROG_ID is MULTI PROGID1 and PROGID2 must be defined
+    PROGIDi, OBIDi, FILTERi values cannot be duplicated
+    at least one extension containing data (NAXIS != 0)
+    EXPTIME >= 0, if defined
+    1E-15 < EXPTIME < 1E+15
+    EXPTIME < (TEXPTIME+0.01)
+    TEXPTIME <= MJD-END - MJD-OBS (tol. 0.01s)
+    TL_OFFAN is >= -999, if defined
+    if ORIGIN not like 'ESO%' and not APEX or ALMA then NOESODAT must be T
+    if ORIGIN == GRANTECAN
+      TELESCOP == GTC
+      else if ORIGIN == NGTS
+      TELESCOP == NGTS
+      INSTRUME == NGTS
+    If APEX OBID1 not allowed
+    if not NGTS
+      mandatory keywords: PROG_ID
+    FLUXCAL in ABSOLUTE, UNCALIBRATED
+    RA/DEC in the correct range [0,360], [-90, 90]
+    FPRA* and FPDE* in the correct range [0,360], [-90, 90]
+    SKY_RES, SKY_RERR, ABMAGLIM in the correct range [0, 99]
+    WAVELMIN =< WAVELMAX, WAVELMIN >0
+    SPEC_RES not negative
+    PIXNOISE not negative
+    PROV0* not allowed
+    OBID0* not allowed
+    EXTNAME defined in all extensions, PHASE3PROVENANCE and PHASE3CATALOG must be unique.
+    ORIGFILE only in primary HDU
+    PRODCATG only in primary HDU
+    NCOMBINE > 0
+    if Provenance extension present (EXTNAME=PHASE3PROVENANCE)
+    PROVXTN = True must be present
+    STREHL in (0,1]
+
+SCIENCE.CATALOG, SCIENCE.MCATALOG, SCIENCE.CATALOGTILE
+    primary HDU
+    FILTER=MULTI if FILTER1 is defined only for OBSTECH=*IMAGE*
+      if FILTER is MULTI FILTER1 and FILTER2 must be defined
+    EXTNAME is not allowed in the primary header
+    PRODCATG is catalog tile
+      Mandatory keywords: RA, DEC, OBJECT, FPRA1, FPDE1, SKYSQDEG
+      RADESYS mandatory (RADECSYS instead also tolerated)
+    PRODCATG is catalog metafile
+      Mandatory keyword: SKYSQDEG
+    NAXIS = 0
+    if PRODCATG is SCIENCE.CATALOG
+      if APEXBOL
+        ORIGIN = APEX
+        TELESCOP = APEX-12m
+        Mandatory keywords: FILTER, TIMESYS, WAVELMIN, WAVELMAX, SKY_RES, BNOISE
+    Footprint KEYWORDS (FPRAi/DEi) are counter-clockwise oriented, convex,
+    contain the position defined in RA and DEC, FP area consistent with SKYSQDEG.
+    extension HDU header
+    XTENSION = BINTABLE
+    EXTNAME = PHASE3CATALOG
+    Mandatory keyword: TFIELDS
+    forbidden keywords: 1:EXTVER, 1:EXTLEVEL
+    TDMINi < TDMAXi, if both defined
+      TCOMMi must be defined and cannot be empty
+      TFORMi must be defined and must follow the standard
+            Error reported for presence multi-element arrays
+      TSCALi is not allowed
+      TTYPEi must be defined, cannot be an SQL reserved keywords and must match the pattern [A-Za-z][A-Za-z_0-9]*
+      TUCDi must be defined, composed of the UCD valid atoms and must define one and only one identifier (meta.id;meta.main)
+        units related to the columns defined by 'pos.eq.ra;meta.main' and 'pos.eq.dec;meta.main' must be 'deg'
+      TUNITi must be defined
+      TZEROi is not allowed
+      TXLNKi must be ARCFILE, ORIGFILE or CATALOG, check TXRGF and TXCTY in case of SCIENCE.CATALOG and SCIENCE.MCATALOG
+      TTYPEi must be unique, case insensitive
+    extension HDU data
+        ID column values must be not null
+        numeric values must be within TDMIN and TDMAX, if they are defined
+
+SCIENCE.IMAGE
+    Mandatory keywords: FILTER, OBJECT, FLUXCAL
+    Mandatory keywords: RA, DEC, EXPTIME, TEXPTIME
+    RADESYS mandatory (RADECSYS instead also tolerated)
+    if ORIGIN like 'ESO%' then mandatory keywords NCOMBINE, OBID1
+    if collection_name = SPHERE (or TEST-SPHERE), EXPTIME=TEXPTIME
+    if MEF
+      NAXIS == 0
+      ext:NAXIS == 2
+      Mandatory keywords in extenstions: BUNIT, PHOTZP, PHOTSYS, ABMAGLIM, ABMAGSAT
+      Mandatory keywords in extenstions: CTYPE[12], CRVAL[12], CRPIX[12], CD[12]_[12], CUNIT[12]
+        RA DEC in the footprint
+      CUNIT1,2 must be 'deg'
+        ext:PSF_FWHM must be greater than 0 or equal to -1
+        ext:PSF_FWHM can't always be -1
+    if image using HDUclass mechanism
+      NAXIS == 0
+      HDUCLAS2 must be in ['DATA', 'ERROR', 'QUALITY', 'CONF', 'BKG_DATA', 'BKG_ERROR', 'BKG_CONF']
+      a science data ext. indicated by HDUCLAS2=DATA must be present
+        if present, mandatory keywords: BUNIT, PHOTZP, PHOTSYS, ABMAGLIM, ABMAGSAT, PSF_FWHM
+                                        CTYPE[12], CRVAL[12], CRPIX[12], CD[12]_[12], CUNIT[12]
+                                        HDUCLASS, HDUDOC, HDUVERS, HDUCLAS1, HDUCLAS2
+          RA DEC in the footprint
+        CUNIT1,2 must be 'deg'
+        PSF_FWHM must be > 0
+        ABMAGLIM must be > ABMAGSAT
+          err:HDUCLAS3 in ["MSE", "RMSE", "'INVMSE", "INVRMSE"]
+          err:SCIDATA must be EXTNAME of the ext. containing data
+          data:ERRDATA must be EXTNAME of the ext. containing errors
+        if there is a QUALITY extension (HDUCLAS2=QUALITY)
+          HDUCLAS3 in ['MASKZERO','MASKONE', 'FLAG32BIT', 'FLAG16BIT']
+          qual:SCIDATA must be EXTNAME of the ext. containing data
+          data:QUALDATA must be EXTNAME of the ext. containing quality info
+    else
+      NAXIS == 2
+      Mandatory keywords: BUNIT, PHOTZP, PHOTSYS, ABMAGLIM, ABMAGSAT, PSF_FWHM
+      Mandatory keywords: CTYPE[12], CRVAL[12], CRPIX[12], CD[12]_[12], CUNIT[12]
+        RA DEC in the footprint
+      CUNIT1,2 must be 'deg'
+      PSF_FWHM must be greater than 0
+    FLUXCAL in [ABSOLUTE, UNCALIBRATED]
+    if VIRCAM or OMEGACAM
+      Mandatory keyword: ASSON1
+      if not deepProduct
+        Mandatory keyword: DIT
+      if MEF
+        Mandatory keyword in extensions: ELLIPTIC
+        else
+        Mandatory keyword: ELLIPTIC
+    if VIRCAM and not deep product
+      Mandatory keywords: NJITTER, NOFFSETS, NUSTEP, NDIT
+    if OMEGACAM
+      TELESCOP = ESO-VST
+      ORIGIN = ESO-PARANAL
+        if pawprint OBSTECH in "IMAGE,JITTER", "IMAGE,OFFSET", "IMAGE,STARE"
+        else OBSTECH = IMAGE,DITHER
+    NDIT is int, if defined
+
+SCIENCE.SRCTBL
+    Mandatory keywords: FILTER, OBJECT, 1:PHOTSYS, REFERENC, RA, DEC, OBID1, NCOMBINE, OBSTECH
+    RADESYS mandatory (RADECSYS instead also tolerated)
+    multi-band source tables are not allowed (FILTER1 not allowed)
+    mandatory keywords: EXPTIME, TEXPTIME, ext:ABMAGLIM, ext:ABMAGSAT, ext:PSF_FWHM
+      ext:PSF_FWHM must be greater than 0 or equal to -1
+      ext:PSF_FWHM can't always be -1
+    if INSTRUME in OMEGACAM, VIRCAM mandatory keyword ext:ELLIPTIC
+    if INSTRUME=OMEGACAM
+      TELESCOP = ESO-VST
+      ORIGIN = ESO-PARANAL
+      OBSTECH in [IMAGE,DITHER, IMAGE,JITTER, IMAGE,OFFSET, IMAGE,STARE]
+    mandatory keywords TFORMi, TTYPEi, for every column in every table extension
+
+SCIENCE.SPECTRUM
+      cross-header checks
+      abs(0:RA-1:RA) <= 1e-7
+      abs(0:DEC-1:DEC) <= 1e-7
+      0:OBJECT = 1:OBJECT
+      1:TELAPSE >= TEXPTIME (tol=0.1s)
+      1:TELAPSE = MJD-END - MJD-OBS (tol=0.1s)
+      1:TMID = (MJD-OBS + MJD-END)/2 (tol=1e-4)
+      1:SPEC_VAL = (WAVELMIN+WAVELMAX)/2 (tol=1e-3)
+      1:SPEC_BW = WAVELMAX-WAVELMIN (tol=1e-3)
+    primary HDU
+    mandatory keywords: SPECSYS, OBJECT, FLUXCAL
+    mandatory keywords: BITPIX, NAXIS, RA, DEC, WAVELMIN, WAVELMAX, SPEC_BIN, FLUXERR, EXPTIME, TEXPTIME, SNR, SPEC_RES
+    mandatory keywords: SIMPLE, EXTEND, TOT_FLUX, CONTNORM
+    RADESYS mandatory (RADECSYS instead also tolerated)
+    else if ORIGIN == APEX
+      mandatory keywords: NCOMBINE, FEBE1
+      else and ORIGIN != GRANTECAN
+        mandatory keywords: NCOMBINE, OBID1
+    SPEC_RES>0
+    BUNIT, CD1_1 are not allowed
+    NAXIS = 0
+    if FLUXCAL = ABSOLUTE
+      FLUXERR = -2 or FLUXERR in [0..100]
+    if TOT_FLUX=true, FLUXCAL has to be 'ABSOLUTE'
+    if collection not XSHOOTER, FORS2-SPEC, VIMOS, ESPRESSO
+      mandatory keywords: EXT_OBJ
+    extension HDU header
+    mandatory keywords: VOCLASS, OBJECT, EXTNAME, TITLE
+    mandatory keywords: TTYPE[1-3], TUTYP[1-3], TFORM[1-3], TUNIT[1-3], TUCD[1-3]
+    mandatory double keywords: RA, DEC, APERTURE, TELAPSE, TMID, SPEC_VAL, SPEC_BW, TFIELDS, NELEM, TDMIN1, TDMAX1
+    BUNIT is not allowed
+    NAXIS = 2
+    NAXIS2 = 1
+    APERTURE in deg (<0.1)
+    TUTYP1 matches (Spectrum.|spec:|eso:)Data.SpectralAxis.Value
+    TUTYP2 matches (Spectrum.|spec:|eso:)Data.FluxAxis.Value
+    TUTYP3 matches (Spectrum.|spec:|eso:)Data.FluxAxis.Accuracy.StatError
+    TTYPE1 in WAVE, FREQ, ENER
+    TTYPE1=WAVE requires TUCD1=em.wl or em.wl;obs.atmos
+    TTYPE2 begins with FLUX
+    TTYPE3 begins with ERR
+    TTYPEi=SKYBACK not allowed, BGFLUX to be used instead
+    TFORMi must all be the same
+    VOPUB = ESO/SAF
+    GCOUNT = 1
+    PCOUNT = 0
+    TUNIT2 must be equal to TUNIT3 (flux and its error)
+    extension HDU data
+    the data in the first column is strictly increasing
+    if TTYPE1 == WAVE (Angstrom, um, nm supported)
+      SPEC_BIN: median(WAVE[i+1]-WAVE[i])/2 <= SPEC_BIN <= median(WAVE[i+1]-WAVE[i])*3/2 (i=1,N-1)
+      WAVELMIN greater than data[0][0] (tol=bin_max/2)
+      WAVELMAX smaller than data[0][-1] (tol=bin_max/2)
+      TDMIN1 = data[0][0] (tol = bin_max/2)
+      TDMAX1 = data[0][-1] (tol = bin_max/2)
+    if TTYPE1 == FREQ, handles only GHz
+      SPEC_BIN = median(FREQ[i+1]-FREQ[i]), (i=1,N-1), tolerance median(FREQ[i+1]-FREQ[i])/2
+      WAVELMIN smaller than data[0][-1] (tol = 10 nm)
+      WAVELMAX grater than data[0][0] (tol = 10 nm)
+      TDMIN1 = data[0][0]
+      TDMAX1 = data[0][-1]
+    Inf data values not allowed
+
+SCIENCE.IMAGE.FLUXMAP
+    Mandatory keywords: BUNIT, FEBE1, FILTER, OBJECT, TIMESYS, FLUXCAL, ASSON1
+    Mandatory keywords: REFERENC, MAPMODE, SKY_RES, BNOISE
+    Mandatory keywords: CTYPE[12], CRVAL[12], CRPIX[12], CD[12]_[12], CUNIT[12]
+    RADESYS mandatory (RADECSYS instead also tolerated)
+      RA DEC must be in the footprint
+    CUNIT1,2 must be 'deg'
+    Mandatory keywords: NAXIS1, NAXIS2, RA, DEC, FLUXERR, WAVELMIN, WAVELMAX, NCOMBINE
+    ABMAGLIM, RA_ERR, DEC_ERR are not allowed
+    FLUXCAL is ABSOLUTE
+    TELESCOP = APEX-12m
+    If not APEX, EXPTIME, TEXPTIME mandatory
+    mandatory keywords: EXPTIME, TEXPTIME
+    ORIGIN = APEX
+    if FEBE1 is LABOCA-ABBA
+      FILTER is 870u
+      WAVELMIN is 7.994E05
+      WAVELMAX is 9.517E05
+All Phase3 files
+    filename cannot be longer than 68 characters
+    if filename ends with '.fz' must be compressed.
+    if the file is compressed its filename must end with '.fz'.
+    CHECKSUM and DATASUM in all extensions
+
+SCIENCE.VISIBILITY
+    if instrume != PIONIER, run the OIFITS2 validator
+  primary HDU
+    Mandatory keywords: RA, DEC, SPECSYS, OBJECT, PRODCATG, DATE-OBS
+    mandatory keywords: BITPIX, NAXIS, EQUINOX, WAVELMIN, WAVELMAX, EXPTIME, TEXPTIME, SPEC_RES
+    mandatory keywords: SIMPLE, EXTEND, CONTENT, INSMODE, SPEC_ERR, SPEC_SYE, NUM_CHAN
+    mandatory keywords: DATE-OBS, PROV1, OBSERVER, OBSTECH, T3PHIERR, VIS2ERR, NCOMBINE
+    mandatory keywords: TIMESYS, OBID1, BASE_MIN, BASE_MAX
+    RADESYS mandatory (RADECSYS instead also tolerated)
+    TELESCOP=ESO-VLTI-%
+    INSTRUME in [PIONIER, GRAVITY]
+    OBSTECH=INTERFEROMETRY*
+    If PIONIER
+      mandatory keywords: ASSON1/2, ASSOC1/2, ASSOM1/2
+      CONTENT = OIFITS1
+      INSMODE in [FREE_H, GRISM_H, FREE_K, GRISM_K, SMALL, LARGE]
+    if GRAVITY
+      VISPHERR mandatory
+      CONTENT = OIFITS2
+      SPEC_ERR in [0.28, 2.2, 50]
+      SPEC_SYE = 0.1
+    EXTNAME='OI_TARGET' must be present in one extension
+    EXTNAME='OI_ARRAY' must be present in one extension
+    EXTNAME='OI_WAVELENGTH' must be present in one extension
+    EXTNAME='OI_VIS2' must be present in one extension
+    EXTNAME='OI_T3' must be present in one extension
+    if PIONIER
+      if there is an extension named OI_TARGET
+        OI_TARGET:OI_REVN is mandatory and must be = 1
+        checking presence of mandatory columns in the OI_TARGET extension
+      if there is an extension named OI_WAVELENGTH
+        OI_WAVELENGTH:INSNAME, OI_WAVELENGTH:OI_REVN mandatory
+        OI_WAVELENGTH:OI_REVN must be 1
+        checking presence of mandatory columns in the OI_WAVELENGTH extension
+      if there is an extension named OI_ARRAY
+        OI_ARRAY:OI_REVN, ARRNAME, FRAME, ARRAYX, ARRAYY, ARRAYZ mandatory
+        OI_ARRAY:OI_REVN must be 1
+        OI_ARRAY:ARRNAME must be VLTI
+        checking presence of mandatory columns in the OI_ARRAY extension
+      if there is an extension named OI_VIS2
+        OI_VIS2:OI_REVN, INSNAME, ARRNAME, DATE-OBS mandatory
+        OI_VIS2:OI_REVN must be 1
+        OI_VIS2:ARRNAME must be VLTI
+        OI_VIS2:INSNAME consistent with OI_WAVELENGTH:INSNAME
+        checking presence of mandatory columns in the OI_VIS2 extension
+      if there is an extension named OI_T3
+        OI_T3:OI_REVN, INSNAME, ARRNAME, DATE-OBS mandatory
+        OI_T3:OI_REVN must be 1
+        OI_T3:ARRNAME must be VLTI
+        checking presence of mandatory columns in the OI_T3 extension
+      WAVELMIN equal to the min value in OI_WAVELENGTH:EFF_WAVE converted into nm considering EFF_BAND
+      WAVELMAX equal to the max value in OI_WAVELENGTH:EFF_WAVE converted into nm considering EFF_BAND
+      EXPTIME equal to the average of OI_VIS2:INT_TIME column values
+    if GRAVITY
+      EXTNAME='OI_VIS', EXTNAME='OI_FLUX' must be present in at least one extension
+      WAVELMIN equal to the min value in OI_WAVELENGTH:EFF_WAVE (in the ext. where INSNAME=GRAVITY_SC or GRAVITY_SC_P1) converted into nm considering EFF_BAND
+      WAVELMAX equal to the max value in OI_WAVELENGTH:EFF_WAVE (in the ext. where INSNAME=GRAVITY_SC or GRAVITY_SC_P1) converted into nm considering EFF_BAND
+      EXPTIME equal to the average of OI_VIS2:INT_TIME column values (in the ext. where INSNAME=GRAVITY_SC or GRAVITY_SC_P1)
+
+SCIENCE.CUBE.IFS
+  primary HDU
+    Mandatory keywords: OBJECT, FLUXCAL, DATE-OBS, PROV1, OBSTECH, ASSON1
+    Mandatory keywords: RA, DEC, EXPTIME, TEXPTIME
+    Mandatory keywords: NCOMBINE, WAVELMIN, WAVELMAX, SPEC_RES, SPECSYS
+      if APEX, mandatory keywords: BNOISE, MAPMODE, FEBE1, SKY_RES
+      else mandatory keywords also OBID1, PIXNOISE
+        if collection NOT KMOS, SKY_RES, ABMAGLIM mandatory
+    RADESYS mandatory (RADECSYS instead also tolerated)
+    NAXIS = 0
+    FILTER is not allowed
+    SPEC_BIN is not allowed
+    specific checks for MUSE
+      check WAVELMIN/MAX range
+      check SPEC_RES range
+    specific checks for KMOS
+      check WAVELMIN/MAX range
+      check SPEC_RES range
+  extension HDU header
+    mandatory keywords:
+    CRPIX1, CRPIX2, CD1_1, CD1_2, CD2_2, CD2_1,
+    CUNIT1, CUNIT2, CTYPE1, CTYPE2, CSYER1, CSYER2, CRVAL1, CRVAL2, CTYPE3, CRVAL3, CRPIX3, CTYPE3, CUNIT3, CD3_3
+    NAXIS3, HDUCLASS, HDUDOC, HDUVERS, HDUCLAS1, HDUCLAS2, BUNIT
+      RA DEC in the footprint
+    CUNIT1,2 must be 'deg'
+    ext:HDUCLASS must be 'ESO'
+    extension indicated via HDUCLAS2=DATA must be present (the other extensions are optional)
+        HDUCLAS3 in ["MSE", "RMSE", "'INVMSE", "INVRMSE"]
+        err:SCIDATA must be EXTNAME of the ext. containing data
+        data:ERRDATA must be EXTNAME of the ext. containing errors
+      if there is a QUALITY extension (HDUCLAS2=QUALITY)
+        HDUCLAS3 in ['MASKZERO','MASKONE', 'FLAG32BIT', 'FLAG16BIT']
+        qual:SCIDATA must be EXTNAME of the ext. containing data
+        data:QUALDATA must be EXTNAME of the ext. containing quality info
+    NAXIS=3 in all extensions
+      recognised categories: SCIENCE.IMAGE, SCIENCE.MEFIMAGE, SCIENCE.SPECTRUM, SCIENCE.SRCTBL, SCIENCE.CUBE.IFS,
+      SCIENCE.CUBE, SCIENCE.IMAGE.FLUXMAP, SCIENCE.VISIBILITY, SCIENCE.VISIBILITY.UNCALIBRATED;
+      ANCILLARY.PREVIEW, WEIGHTMAP, GAINMAP, MASK, SPECTRUM, 2DSPECTRUM, IMAGE,
+      MOSSPECTRA, MOSSPECTRA.CALSIM, MOSSPECTRA.SKY, MOSSPECTRA.PREVIEW, RMSMAP, SNRMAP, RESMAP, SRCMASK,
+      FILTERED, SPECTRUM.TELLURIC, SPECTRUM.CONTINUUM, MUSE.PIXTABLE_REDUCED, KMOS.SCI_RECONSTRUCTED, EXPMAP, VARMAP,
+      PIXELCOUNTMAP, IMAGE.WHITELIGHT, CUBE.IFS.NO_TELLCORR, KMOS.SPECTRUM.TELLURIC, CUBE.IFS.SKY, CCF, DRIFT, CUBE.IFS,
+      IMAGE.COL_DENSITY
+
+BATCH Validation:
+    Cube dataset validation:
+    There must be one ANCILLARY.IMAGE.WHITELIGHT associated to each science cube.
+        The whitelight image must have the same dimension (NAXIS1, NAXIS2) of the science cube s spatial axes.
+    Provenance information mandatory (not for MCATALOG or NGTS)
+    Provenance validation
+    Multi-file catalogue validation
+      1:TFIELDS must be the same for each multi-catalogue file
+      1:TFORM*, 1:TTYPE*, 1:TUCD*, 1:TNULL*, 1:TUNIT* of each catalogue data file must be consistent with the values defined in the metadata file
+      SKYSQDEG[MCATALOG] <= sum(SKYSQDEG[TILES])
+      MJD-OBS[MCATALOG] = min(MJD-OBS[TILES])
+      MJD-END[MCATALOG] = max(MJD-END[TILES])
+        list[PROGID]_tiles =list[PROGID]_mcatalog
+  check consistency of TELESCOP, INSTRUME, OBIDi, PROG_ID, MJD-OBS, MJD-END, FILTER, NCOMBINE, EXPTIME,
+    TEXPTIME respect to the originating files indicated in the PROVi keys
